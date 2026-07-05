@@ -1,5 +1,5 @@
 // =============================================
-// VocabMaster AI — Achievements Module
+// Piyala — Achievements Module
 // =============================================
 
 const ACHIEVEMENT_CATS = {
@@ -59,7 +59,7 @@ const ACHIEVEMENT_BENEFITS = {
   study_5000min: { how:'Study for 5000 minutes total', benefit:'Over 83 hours of vocabulary learning', reward:'Time Lord title + 3000 XP' },
   all_rounder: { how:'Unlock achievements in at least 4 different categories', benefit:'Shows well-rounded vocabulary skills across all areas', reward:'All-Rounder title + 500 XP' },
   completionist: { how:'Unlock 30 different achievements', benefit:'True achievement hunter, dedicated to mastery', reward:'Completionist title + 3000 XP' },
-  perfectionist: { how:'Unlock every single achievement in the game', benefit:'You have conquered everything VocabMaster offers', reward:'Perfectionist title + 10000 XP — ultimate bragging rights' },
+  perfectionist: { how:'Unlock every single achievement in the game', benefit:'You have conquered everything Piyala offers', reward:'Perfectionist title + 10000 XP — ultimate bragging rights' },
 };
 
 const ACHIEVEMENTS = [

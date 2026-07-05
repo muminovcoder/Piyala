@@ -1,4 +1,4 @@
-// VocabMaster AI — Vocabulary Engine Test Suite
+// Piyala — Vocabulary Engine Test Suite
 // Run with: node test-vocab.js
 
 // Extract pure functions from words.js by redefining them (no DOM/browser deps)
@@ -263,7 +263,7 @@ function assertInRange(actual, min, max, msg) {
 
 console.log('');
 console.log('═══════════════════════════════════════════');
-console.log('  VocabMaster AI — Vocabulary Engine Tests');
+console.log('  Piyala — Vocabulary Engine Tests');
 console.log('═══════════════════════════════════════════');
 console.log('');
 

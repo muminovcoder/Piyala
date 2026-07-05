@@ -1,5 +1,5 @@
 // =============================================
-// VocabMaster AI — Route Configuration
+// Piyala — Route Configuration
 // Scalable nested URL hierarchy with SEO-friendly paths
 // =============================================
 // Architecture:

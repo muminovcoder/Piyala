@@ -1,5 +1,5 @@
 // =============================================
-// VocabMaster AI — News & Roadmap Module
+// Piyala — News & Roadmap Module
 // =============================================
 
 const NEWS_DATA = {
@@ -278,7 +278,7 @@ function renderNews() {
       </div>
 
       <div class="news-footer">
-        <div class="news-footer-text"><i class="ti ti-heart"></i> VocabMaster AI — an ever-evolving project. Share your suggestions and feedback! <i class="ti ti-heart"></i></div>
+        <div class="news-footer-text"><i class="ti ti-heart"></i> Piyala — an ever-evolving project. Share your suggestions and feedback! <i class="ti ti-heart"></i></div>
       </div>
     </div>
   `;

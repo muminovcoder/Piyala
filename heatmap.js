@@ -1,5 +1,5 @@
 // =============================================
-// VocabMaster AI — Activity Heatmap Module
+// Piyala — Activity Heatmap Module
 // Standalone: renderHeatmap, setHeatmapDays,
 // setBigHeatmapDays, tooltip, event listeners
 // =============================================

@@ -95,7 +95,7 @@ router.post('/send-code', authLimiter, async (req, res) => {
     if (knownChatId) {
       const result = await tgApi('sendMessage', {
         chat_id: knownChatId,
-        text: `🔐 *VocabMaster AI Verification*\n\nYour verification code is:\n\n\`${code}\`\n\nEnter this code on the website to complete registration.\n\nCode expires in 10 minutes.`,
+        text: `🔐 *Piyala Verification*\n\nYour verification code is:\n\n\`${code}\`\n\nEnter this code on the website to complete registration.\n\nCode expires in 10 minutes.`,
         parse_mode: 'Markdown',
         reply_markup: {
           inline_keyboard: [[
@@ -185,7 +185,7 @@ router.post('/register', authLimiter, async (req, res) => {
     if (knownChatId) {
       const result = await tgApi('sendMessage', {
         chat_id: knownChatId,
-        text: `🔐 *VocabMaster AI Registration*\n\nYour verification code is:\n\n\`${code}\`\n\nEnter this code on the website to complete registration.\n\nCode expires in 10 minutes.`,
+        text: `🔐 *Piyala Registration*\n\nYour verification code is:\n\n\`${code}\`\n\nEnter this code on the website to complete registration.\n\nCode expires in 10 minutes.`,
         parse_mode: 'Markdown',
         reply_markup: {
           inline_keyboard: [[
@@ -304,11 +304,11 @@ router.post('/verify-code', authLimiter, async (req, res) => {
     if (authData.chatId) {
       tgApi('sendMessage', {
         chat_id: authData.chatId,
-        text: `✅ *Registration successful!*\n\nYou are now logged in to VocabMaster AI. Happy learning! 🎉`,
+        text: `✅ *Registration successful!*\n\nYou are now logged in to Piyala. Happy learning! 🎉`,
         parse_mode: 'Markdown',
         reply_markup: {
           inline_keyboard: [[
-            { text: '🚀 Open VocabMaster AI', url: 'https://vocabmasterai.site' }
+            { text: '🚀 Open Piyala', url: 'https://vocabmasterai.site' }
           ]],
         },
       }).catch(() => {});
@@ -459,7 +459,7 @@ router.post('/tg-webhook', async (req, res) => {
 
           await tgApi('sendMessage', {
             chat_id: chatId,
-            text: `🔐 *VocabMaster AI Verification*\n\nHey ${firstName}! Your verification code is:\n\n\`${code}\`\n\nEnter this code on the website to complete registration.\n\nCode expires in 10 minutes.`,
+            text: `🔐 *Piyala Verification*\n\nHey ${firstName}! Your verification code is:\n\n\`${code}\`\n\nEnter this code on the website to complete registration.\n\nCode expires in 10 minutes.`,
             parse_mode: 'Markdown',
             reply_markup: {
               inline_keyboard: [[
@@ -473,7 +473,7 @@ router.post('/tg-webhook', async (req, res) => {
 
       await tgApi('sendMessage', {
         chat_id: chatId,
-        text: `🎯 *Welcome to VocabMaster AI, ${firstName}!* 🎯\n\nTo get started:\n1️⃣ Go to the website\n2️⃣ Click \"Continue with Telegram Bot\"\n3️⃣ Enter your phone number, Telegram username, and create a password\n4️⃣ Come back here and send /start to get your verification code\n\nAlready registered? Just login with your username and password on the website.\n\nLet's master vocabulary together! 🚀`,
+        text: `🎯 *Welcome to Piyala, ${firstName}!* 🎯\n\nTo get started:\n1️⃣ Go to the website\n2️⃣ Click \"Continue with Telegram Bot\"\n3️⃣ Enter your phone number, Telegram username, and create a password\n4️⃣ Come back here and send /start to get your verification code\n\nAlready registered? Just login with your username and password on the website.\n\nLet's master vocabulary together! 🚀`,
         parse_mode: 'Markdown',
         reply_markup: {
           inline_keyboard: [[
@@ -502,7 +502,7 @@ router.post('/tg-webhook', async (req, res) => {
 
         await tgApi('sendMessage', {
           chat_id: chatId,
-          text: `🔐 *VocabMaster AI Verification*\n\nHey ${firstName}! Your verification code is:\n\n\`${code}\`\n\nEnter this code on the website to complete registration.`,
+          text: `🔐 *Piyala Verification*\n\nHey ${firstName}! Your verification code is:\n\n\`${code}\`\n\nEnter this code on the website to complete registration.`,
           parse_mode: 'Markdown',
           reply_markup: {
             inline_keyboard: [[
@@ -517,10 +517,10 @@ router.post('/tg-webhook', async (req, res) => {
     // No pending code
     await tgApi('sendMessage', {
       chat_id: chatId,
-      text: `Hi ${firstName}! 👋\n\nI'm the VocabMaster AI bot. To get a verification code:\n\n1. Go to vocabmasterai.site\n2. Click "Continue with Telegram Bot"\n3. Enter your phone number, Telegram username, and create a password\n4. Come back here and send /start`,
+      text: `Hi ${firstName}! 👋\n\nI'm the Piyala bot. To get a verification code:\n\n1. Go to vocabmasterai.site\n2. Click "Continue with Telegram Bot"\n3. Enter your phone number, Telegram username, and create a password\n4. Come back here and send /start`,
       reply_markup: {
         inline_keyboard: [[
-          { text: '🚀 Open VocabMaster AI', url: 'https://vocabmasterai.site' }
+          { text: '🚀 Open Piyala', url: 'https://vocabmasterai.site' }
         ]],
       },
     });
@@ -973,7 +973,7 @@ router.post('/payment/approve', async (req, res) => {
         const https = require('https');
         const payload = JSON.stringify({
           chat_id: userInfo.rows[0].telegram_chat_id,
-          text: `🎉 *Payment Approved!* 🎉\n\nYour *${tier}* premium subscription is now active!\n\nEnjoy all the premium features. Thank you for your support! 🙏\n\n[Open VocabMaster AI](https://vocabmasterai.site)`,
+          text: `🎉 *Payment Approved!* 🎉\n\nYour *${tier}* premium subscription is now active!\n\nEnjoy all the premium features. Thank you for your support! 🙏\n\n[Open Piyala](https://vocabmasterai.site)`,
           parse_mode: 'Markdown',
           disable_web_page_preview: true,
         });

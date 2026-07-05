@@ -112,7 +112,7 @@ async function handleStart(update) {
 
   if (user.id === ADMIN_ID) {
     await sendKeyboard(chatId,
-      `👑 *Admin Panel — VocabMaster AI*\n\nWelcome back, *${firstName}!*\n\nChoose an option:`,
+      `👑 *Admin Panel — Piyala*\n\nWelcome back, *${firstName}!*\n\nChoose an option:`,
       [
         [{ text: '📊 Bot & Website Stats', callback_data: 'admin_stats' }],
         [{ text: '🎁 Give Premium to User', callback_data: 'admin_give_premium' }],
@@ -154,7 +154,7 @@ async function handleAdminCallback(query) {
     await tgApi('editMessageText', {
       chat_id: chatId,
       message_id: messageId,
-      text: `📊 *VocabMaster AI — Statistics*\n\n👥 *Website Users:* \`${stats.websiteUsers || 0}\`\n🤖 *Bot Users:* \`${stats.botUsers || 0}\`\n👑 *Premium Users:* \`${stats.premiumUsers || 0}\`\n\n📅 *Last Updated:* ${new Date().toLocaleString()}`,
+      text: `📊 *Piyala — Statistics*\n\n👥 *Website Users:* \`${stats.websiteUsers || 0}\`\n🤖 *Bot Users:* \`${stats.botUsers || 0}\`\n👑 *Premium Users:* \`${stats.premiumUsers || 0}\`\n\n📅 *Last Updated:* ${new Date().toLocaleString()}`,
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [
@@ -229,7 +229,7 @@ async function handleAdminCallback(query) {
     await tgApi('editMessageText', {
       chat_id: chatId,
       message_id: messageId,
-      text: `👑 *Admin Panel — VocabMaster AI*\n\nChoose an option:`,
+      text: `👑 *Admin Panel — Piyala*\n\nChoose an option:`,
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [
@@ -352,7 +352,7 @@ async function handleAdminCallback(query) {
       // Notify the granted user
       if (result.userChatId) {
         await sendMessage(result.userChatId,
-          `🎉 *Congratulations!*\n\nYou have been granted *${tier}* Premium! 🎊\n\nEnjoy all the premium features now available in your account.\n\n[Open VocabMaster AI](https://vocabmasterai.site)`,
+          `🎉 *Congratulations!*\n\nYou have been granted *${tier}* Premium! 🎊\n\nEnjoy all the premium features now available in your account.\n\n[Open Piyala](https://vocabmasterai.site)`,
           { parse_mode: 'Markdown', disable_web_page_preview: true }
         );
       }
@@ -386,7 +386,7 @@ async function handleAdminMessage(msg) {
   if (text.toLowerCase() === '/admin') {
     pendingAdminActions.delete(chatId);
     await sendKeyboard(chatId,
-      `👑 *Admin Panel — VocabMaster AI*\n\nWelcome back!\n\nChoose an option:`,
+      `👑 *Admin Panel — Piyala*\n\nWelcome back!\n\nChoose an option:`,
       [
         [{ text: '📊 Bot & Website Stats', callback_data: 'admin_stats' }],
         [{ text: '🎁 Give Premium to User', callback_data: 'admin_give_premium' }],
@@ -428,7 +428,7 @@ async function handleAdminMessage(msg) {
       return;
     }
     await sendMessage(chatId,
-      `📊 *VocabMaster AI — Statistics*\n\n👥 *Website Users:* \`${stats.websiteUsers || 0}\`\n🤖 *Bot Users:* \`${stats.botUsers || 0}\`\n👑 *Premium Users:* \`${stats.premiumUsers || 0}\``,
+      `📊 *Piyala — Statistics*\n\n👥 *Website Users:* \`${stats.websiteUsers || 0}\`\n🤖 *Bot Users:* \`${stats.botUsers || 0}\`\n👑 *Premium Users:* \`${stats.premiumUsers || 0}\``,
       { parse_mode: 'Markdown' }
     );
     return;
@@ -566,7 +566,7 @@ async function run() {
 }
 
 if (require.main === module) {
-  console.log(`VocabMaster AI Bot started (admin mode)`);
+  console.log(`Piyala Bot started (admin mode)`);
   console.log(`   Admin ID: ${ADMIN_ID}`);
   console.log(`   API: ${API_BASE}`);
   console.log(`   Polling interval: ${POLL_INTERVAL}ms`);

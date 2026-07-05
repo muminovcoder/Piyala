@@ -1,5 +1,5 @@
 // =============================================
-// VocabMaster AI — Dashboard/General Module
+// Piyala — Dashboard/General Module
 // iOS-style dashboard with 2-column layout
 // =============================================
 

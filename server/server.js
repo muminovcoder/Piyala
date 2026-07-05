@@ -1,4 +1,4 @@
-// SECURE: VocabMaster AI — Maximum Security Backend
+// SECURE: Piyala — Maximum Security Backend
 require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
 
 const express = require('express');
@@ -490,7 +490,7 @@ async function start() {
     createWsServer(server);
 
     server.listen(PORT, () => {
-      console.log(`VocabMaster AI backend running on port ${PORT}`);
+      console.log(`Piyala backend running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
   } catch (err) {

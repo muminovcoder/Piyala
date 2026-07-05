@@ -1,4 +1,4 @@
-// SECURE: VocabMaster AI — Secure API Layer
+// SECURE: Piyala — Secure API Layer
 // Handles all backend communication with httpOnly cookies and CSRF protection
 // localStorage continues to work as fallback when offline/unauthorized
 

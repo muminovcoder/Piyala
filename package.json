@@ -2,7 +2,7 @@
   "name": "vocabmaster-ai",
   "version": "1.0.0",
   "private": true,
-  "description": "VocabMaster AI — The most advanced vocabulary learning platform",
+  "description": "Piyala — The most advanced vocabulary learning platform",
   "scripts": {
     "start": "node server/server.js",
     "dev": "node --watch server/server.js",

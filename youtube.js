@@ -551,7 +551,7 @@ function renderYoutube(category, channel) {
     }
     // Close any open player when navigating to listing
     ytClosePlayer(true);
-    document.title = 'StudyTube - VocabMaster AI';
+    document.title = 'StudyTube - Piyala';
     if (category) {
       if (category.startsWith('ch:')) {
         ytFilterCh = category.slice(3);

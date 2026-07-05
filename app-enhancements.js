@@ -1,5 +1,5 @@
 // =============================================
-// VocabMaster AI — App Enhancements Module
+// Piyala — App Enhancements Module
 // Premium UX improvements, onboarding, animations
 // =============================================
 
@@ -520,7 +520,7 @@ function initAppEnhancements() {
     if (typeof updateBottomNav === 'function') updateBottomNav(currentPath);
   }, 200);
 
-  console.log('🔮 VocabMaster AI Enhancements loaded');
+  console.log('🔮 Piyala Enhancements loaded');
 }
 
 // Auto-init when DOM is ready

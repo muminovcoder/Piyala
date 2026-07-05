@@ -79,7 +79,7 @@
 .srch-tag:hover { border-color: var(--accent2); color: var(--accent2); background: rgba(91,61,232,0.06); }
 .search-glow-bar {
   position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, #5B3DE8, #22D3EE, #A78BFA, #5B3DE8);
+  background: linear-gradient(90deg, #0EA5E9, #10B981, #34D399, #0EA5E9);
   background-size: 200% 100%; animation: shimmer 3s linear infinite;
 }
 @media (max-width: 640px) {

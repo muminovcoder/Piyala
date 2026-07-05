@@ -1,7 +1,7 @@
 {
   "name": "vocabmaster-ai-backend",
   "version": "1.0.0",
-  "description": "Maximum security backend for VocabMaster AI",
+  "description": "Maximum security backend for Piyala",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

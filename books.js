@@ -1,5 +1,5 @@
 // =============================================
-// VocabMaster AI — Books Module
+// Piyala — Books Module
 // IELTS vocabulary study guides
 // =============================================
 

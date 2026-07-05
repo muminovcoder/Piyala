@@ -1,8 +1,8 @@
 /* =============================================
-   VocabMaster AI — Modern Enhancements
+   Piyala — Modern Enhancements
    Premium UI/UX Overhaul
    Design: Duolingo + Linear + Notion inspired
-   Accent: Purple (#5B3DE8) / Blue (#22D3EE)
+   Accent: Emerald (#10B981) / Teal (#0EA5E9) / Purple (#5B3DE8)
    ============================================= */
 
 /* ===== 1. DESIGN TOKENS (Overlay) ===== */
@@ -410,7 +410,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 24px;
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
   color: #fff;
   border: none;
   border-radius: var(--vm-radius-md);
@@ -586,7 +586,7 @@
 .vm-progress-fill {
   height: 100%;
   border-radius: var(--vm-radius-full);
-  background: linear-gradient(90deg, #5B3DE8, #7C6FFF, #22D3EE);
+  background: linear-gradient(90deg, #0EA5E9, #10B981, #22D3EE);
   transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
@@ -644,7 +644,7 @@
 }
 
 .vm-btn-primary {
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
   color: #fff;
   box-shadow: 0 4px 16px rgba(91,61,232,0.3);
 }
@@ -903,7 +903,7 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
   color: #fff;
   border: none;
   display: flex;
@@ -1118,7 +1118,7 @@ textarea:focus-visible {
 }
 .survey-progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, #5B3DE8, #22D3EE);
+  background: linear-gradient(90deg, #0EA5E9, #10B981);
   border-radius: 2px;
   transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
 }
@@ -1164,9 +1164,9 @@ textarea:focus-visible {
   background: rgba(91,61,232,0.04);
 }
 .survey-option.selected {
-  border-color: #5B3DE8;
+  border-color: #0EA5E9;
   background: rgba(91,61,232,0.08);
-  box-shadow: 0 0 0 1px #5B3DE8;
+  box-shadow: 0 0 0 1px #0EA5E9;
 }
 .survey-opt-label {
   font-size: 14px;
@@ -1278,7 +1278,7 @@ textarea:focus-visible {
 }
 .games-title i {
   font-size: 24px;
-  background: linear-gradient(135deg, #5B3DE8, #22D3EE);
+  background: linear-gradient(135deg, #0EA5E9, #22D3EE);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1686,7 +1686,7 @@ textarea:focus-visible {
 .game-score-bar strong { color: var(--text0); }
 .game-score-bar span:nth-child(1) strong { color: #10B981; }
 .game-score-bar span:nth-child(2) strong { color: #EF4444; }
-.game-score-bar span:nth-child(3) strong { background: linear-gradient(135deg, #5B3DE8, #22D3EE); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.game-score-bar span:nth-child(3) strong { background: linear-gradient(135deg, #0EA5E9, #22D3EE); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
 /* Input row */
 .game-input-row {
@@ -1703,7 +1703,7 @@ textarea:focus-visible {
   transition: all var(--vm-transition);
 }
 .game-input-row:focus-within {
-  border-color: #5B3DE8;
+  border-color: #0EA5E9;
   box-shadow: 0 0 0 3px rgba(91,61,232,0.1);
 }
 .game-input-row input {
@@ -1717,7 +1717,7 @@ textarea:focus-visible {
 }
 .game-input-row input::placeholder { color: var(--vm-text-tertiary); }
 .game-input-row button {
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
   color: #fff;
   border: none;
   border-radius: var(--vm-radius-sm);
@@ -1778,9 +1778,9 @@ textarea:focus-visible {
   transform: translateY(-1px);
   box-shadow: 0 3px 10px rgba(91,61,232,0.12);
 }
-.chain-chip:nth-child(3n+1) { background: linear-gradient(135deg, color-mix(in srgb, #5B3DE8 15%, var(--surface)), color-mix(in srgb, #22D3EE 8%, var(--surface))); border-color: color-mix(in srgb, #5B3DE8 20%, transparent); }
+.chain-chip:nth-child(3n+1) { background: linear-gradient(135deg, color-mix(in srgb, #0EA5E9 15%, var(--surface)), color-mix(in srgb, #22D3EE 8%, var(--surface))); border-color: color-mix(in srgb, #0EA5E9 20%, transparent); }
 .chain-chip:nth-child(3n+2) { background: linear-gradient(135deg, color-mix(in srgb, #10B981 15%, var(--surface)), color-mix(in srgb, #FBBF24 8%, var(--surface))); border-color: color-mix(in srgb, #10B981 20%, transparent); }
-.chain-chip:nth-child(3n+3) { background: linear-gradient(135deg, color-mix(in srgb, #F43F5E 12%, var(--surface)), color-mix(in srgb, #5B3DE8 10%, var(--surface))); border-color: color-mix(in srgb, #F43F5E 20%, transparent); }
+.chain-chip:nth-child(3n+3) { background: linear-gradient(135deg, color-mix(in srgb, #F43F5E 12%, var(--surface)), color-mix(in srgb, #0EA5E9 10%, var(--surface))); border-color: color-mix(in srgb, #F43F5E 20%, transparent); }
 
 /* Match grid */
 .match-grid {
@@ -1815,7 +1815,7 @@ textarea:focus-visible {
 .result-subtitle { font-size: 14px; color: var(--text2); margin-bottom: 20px; }
 
 .result-xp-card {
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF, #22D3EE);
+  background: linear-gradient(135deg, #0EA5E9, #10B981, #22D3EE);
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 16px;
@@ -1892,7 +1892,7 @@ textarea:focus-visible {
 }
 .result-stat.accuracy .stat-icon i { color: #7C6FFF; }
 .result-stat.accuracy .stat-value {
-  background: linear-gradient(135deg, #5B3DE8, #22D3EE);
+  background: linear-gradient(135deg, #0EA5E9, #22D3EE);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1921,7 +1921,7 @@ textarea:focus-visible {
   gap: 10px;
 }
 .result-actions .btn-primary {
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -2105,7 +2105,7 @@ textarea:focus-visible {
   border: none; padding: 0;
 }
 .gs-toggle.active {
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
 }
 .gs-toggle::after {
   content: ''; position: absolute;
@@ -2402,7 +2402,7 @@ textarea:focus-visible {
   word-break: break-word;
 }
 .mem-card-front {
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
   border: 2px solid rgba(255,255,255,0.1);
   color: #fff; font-size: 24px;
 }
@@ -2575,7 +2575,7 @@ textarea:focus-visible {
 /* ───── AUDIO QUIZ ───── */
 .aq-play-btn {
   width: 64px; height: 64px; border-radius: 50%;
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
   color: #fff; border: none;
   font-size: 28px; cursor: pointer;
   margin: 0 auto 16px; display: flex;
@@ -2694,7 +2694,7 @@ textarea:focus-visible {
 
 .games-title i {
   font-size: 26px;
-  background: linear-gradient(135deg, #5B3DE8, #22D3EE);
+  background: linear-gradient(135deg, #0EA5E9, #22D3EE);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -2771,7 +2771,7 @@ textarea:focus-visible {
 }
 
 .gh-settings-btn:hover {
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
   color: #fff;
   border-color: transparent;
   transform: translateY(-2px);
@@ -3127,7 +3127,7 @@ textarea:focus-visible {
 .game-question-word {
   font-size: 2.2rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -3254,7 +3254,7 @@ textarea:focus-visible {
 .game-score-bar span:nth-child(1) strong { color: #10B981; }
 .game-score-bar span:nth-child(2) strong { color: #EF4444; }
 .game-score-bar span:nth-child(3) strong {
-  background: linear-gradient(135deg, #5B3DE8, #22D3EE);
+  background: linear-gradient(135deg, #0EA5E9, #22D3EE);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -3277,7 +3277,7 @@ textarea:focus-visible {
 }
 
 .game-input-row:focus-within {
-  border-color: #5B3DE8;
+  border-color: #0EA5E9;
   box-shadow: 0 0 0 4px rgba(91,61,232,0.1), 0 4px 16px rgba(91,61,232,0.08);
   transform: scale(1.01);
 }
@@ -3295,7 +3295,7 @@ textarea:focus-visible {
 .game-input-row input::placeholder { color: var(--vm-text-tertiary); }
 
 .game-input-row button {
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -3409,7 +3409,7 @@ textarea:focus-visible {
 }
 
 .result-xp-card {
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF, #22D3EE);
+  background: linear-gradient(135deg, #0EA5E9, #10B981, #22D3EE);
   border-radius: 18px;
   padding: 24px 20px;
   margin-bottom: 16px;
@@ -3537,7 +3537,7 @@ textarea:focus-visible {
 
 .result-stat.accuracy .stat-icon i { color: #7C6FFF; filter: drop-shadow(0 2px 8px rgba(91,61,232,0.2)); }
 .result-stat.accuracy .stat-value {
-  background: linear-gradient(135deg, #5B3DE8, #22D3EE);
+  background: linear-gradient(135deg, #0EA5E9, #22D3EE);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -3577,7 +3577,7 @@ textarea:focus-visible {
 }
 
 .result-actions .btn-primary {
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
   color: #fff;
   border: none;
   border-radius: 14px;
@@ -3794,7 +3794,7 @@ textarea:focus-visible {
 }
 
 .mem-card-front {
-  background: linear-gradient(135deg, #5B3DE8, #7C6FFF);
+  background: linear-gradient(135deg, #0EA5E9, #10B981);
   border: 2px solid rgba(255,255,255,0.1);
   box-shadow: 0 4px 16px rgba(91,61,232,0.2);
 }

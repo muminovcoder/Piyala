@@ -353,7 +353,7 @@ const AUTH_HTML = `
         <div id="tg-step-success" style="display:none;text-align:center;padding:20px 0">
           <i class="ti ti-circle-check" style="font-size:48px;color:#34C759;margin-bottom:10px;display:block"></i>
           <p style="font-size:16px;font-weight:600;color:var(--ios-label)">Account created successfully!</p>
-          <p style="font-size:13px;color:var(--ios-secondary-label);margin-top:4px">Welcome to VocabMaster AI</p>
+          <p style="font-size:13px;color:var(--ios-secondary-label);margin-top:4px">Welcome to Piyala</p>
         </div>
       </div>
 

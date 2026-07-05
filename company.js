@@ -8,7 +8,7 @@ const COMPANY = (() => {
         <div style="display:flex;align-items:center;gap:14px">
           <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:20px"><i class="ti ti-star"></i></div>
           <div>
-            <h2 style="font-size:22px;font-weight:700;margin:0;line-height:1.2">About VocabMaster AI</h2>
+            <h2 style="font-size:22px;font-weight:700;margin:0;line-height:1.2">About Piyala</h2>
             <p style="font-size:13px;opacity:0.85;margin:4px 0 0">Empowering learners worldwide with AI-powered vocabulary tools</p>
           </div>
         </div>
@@ -17,7 +17,7 @@ const COMPANY = (() => {
         <div class="cp-card cp-reveal">
           <div class="cp-card-icon"><i class="ti ti-rocket"></i></div>
           <h2 class="cp-card-title">Our Mission</h2>
-          <p class="cp-card-text">VocabMaster AI is a next-generation vocabulary learning platform that combines artificial intelligence with proven spaced repetition techniques. We help learners master thousands of words efficiently through smart flashcards, contextual learning, and personalized study plans.</p>
+          <p class="cp-card-text">Piyala is a next-generation vocabulary learning platform that combines artificial intelligence with proven spaced repetition techniques. We help learners master thousands of words efficiently through smart flashcards, contextual learning, and personalized study plans.</p>
         </div>
         <div class="cp-card cp-reveal" style="transition-delay:0.15s">
           <div class="cp-card-icon"><i class="ti ti-puzzle"></i></div>
@@ -42,7 +42,7 @@ const COMPANY = (() => {
           <h2 class="cp-card-title">Our Story</h2>
           <div class="cp-timeline">
             <div class="cp-timeline-item"><div class="cp-timeline-date">2024 — Q1</div><div class="cp-timeline-title">The Idea</div><div class="cp-timeline-text">Founder Muminov Muhammadsolixon recognized the gap in AI-powered vocabulary tools and began building the first prototype.</div></div>
-            <div class="cp-timeline-item"><div class="cp-timeline-date">2024 — Q3</div><div class="cp-timeline-title">First Launch</div><div class="cp-timeline-text">VocabMaster AI beta launched with 1,000 words and basic flashcards. Reached 500 users in the first week.</div></div>
+            <div class="cp-timeline-item"><div class="cp-timeline-date">2024 — Q3</div><div class="cp-timeline-title">First Launch</div><div class="cp-timeline-text">Piyala beta launched with 1,000 words and basic flashcards. Reached 500 users in the first week.</div></div>
             <div class="cp-timeline-item"><div class="cp-timeline-date">2025 — Q1</div><div class="cp-timeline-title">AI Integration</div><div class="cp-timeline-text">Integrated Groq AI for intelligent word explanations, example sentences, and personalized recommendations.</div></div>
             <div class="cp-timeline-item"><div class="cp-timeline-date">2025 — Q3</div><div class="cp-timeline-title">Full Platform</div><div class="cp-timeline-text">Launched games, grammar exercises, leaderboards, achievements, and Telegram authentication. 10K+ active users.</div></div>
             <div class="cp-timeline-item"><div class="cp-timeline-date">2026 — Present</div><div class="cp-timeline-title">Global Growth</div><div class="cp-timeline-text">Serving learners in 120+ countries. Continuing to expand content, features, and community.</div></div>
@@ -53,10 +53,10 @@ const COMPANY = (() => {
           <h2 class="cp-card-title">Our Team</h2>
           <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:28px;margin-top:8px">
             <div class="cp-team-card-mod">
-              <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#5B3DE8,#22D3EE);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px;box-shadow:0 4px 20px rgba(91,61,232,0.25);position:relative;z-index:1"><i class="ti ti-crown" style="color:#fff"></i></div>
+              <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#0EA5E9,#22D3EE);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px;box-shadow:0 4px 20px rgba(91,61,232,0.25);position:relative;z-index:1"><i class="ti ti-crown" style="color:#fff"></i></div>
               <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text1);margin-bottom:4px;position:relative;z-index:1">M. Muhammadsolixon</div>
               <div style="font-size:13px;color:var(--accent2);font-weight:600;margin-bottom:10px;letter-spacing:0.02em;position:relative;z-index:1">Founder & Lead Developer</div>
-              <div style="font-size:13px;color:var(--text2);line-height:1.6;position:relative;z-index:1">Full-stack developer and language enthusiast. Building VocabMaster AI to make vocabulary learning free, smart, and accessible to everyone worldwide.</div>
+              <div style="font-size:13px;color:var(--text2);line-height:1.6;position:relative;z-index:1">Full-stack developer and language enthusiast. Building Piyala to make vocabulary learning free, smart, and accessible to everyone worldwide.</div>
               <div style="display:flex;gap:12px;justify-content:center;margin-top:14px;position:relative;z-index:1">
                 <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3)"><i class="ti ti-map-pin"></i> Fergana, UZ</div>
                 <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3)"><i class="ti ti-cake"></i> 19 years</div>
@@ -72,7 +72,7 @@ const COMPANY = (() => {
         <div class="cp-card cp-reveal cp-cta-card" style="transition-delay:0.3s">
           <div style="text-align:center;padding:32px 20px 28px;position:relative;z-index:1">
             <div class="cp-card-icon" style="width:56px;height:56px;border-radius:16px;font-size:26px;margin:0 auto 10px"><i class="ti ti-rocket"></i></div>
-            <div style="font-family:var(--font-display);font-size:24px;font-weight:800;background:linear-gradient(135deg,#5B3DE8,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px">Start Your Journey Today</div>
+            <div style="font-family:var(--font-display);font-size:24px;font-weight:800;background:linear-gradient(135deg,#0EA5E9,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px">Start Your Journey Today</div>
             <div style="font-size:14px;color:var(--text2);max-width:440px;margin:0 auto 18px;line-height:1.6">Join <strong style="color:var(--accent2)">10,000+</strong> learners worldwide. Master vocabulary, track your progress, and unlock your language potential.</div>
             <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-bottom:20px">
               <div class="cp-stat-chip"><div style="font-size:20px;font-weight:700;color:var(--accent2);font-family:var(--font-display)">16M+</div><div style="font-size:11px;color:var(--text3)">Words Learned</div></div>
@@ -189,7 +189,7 @@ const COMPANY = (() => {
           </div>
           <div class="cp-legal-section" id="priv-contact">
             <h3 class="cp-legal-h">8. Contact Information</h3>
-            <p class="cp-legal-p">VocabMaster AI is developed and operated from Fergana, Uzbekistan.</p>
+            <p class="cp-legal-p">Piyala is developed and operated from Fergana, Uzbekistan.</p>
             <ul class="cp-legal-ul">
               <li>Email: <strong>muinovcoder@gmail.com</strong></li>
               <li>Data Protection: <strong>muinovcoder@gmail.com</strong></li>
@@ -210,7 +210,7 @@ const COMPANY = (() => {
           <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:20px"><i class="ti ti-scale"></i></div>
           <div>
             <h2 style="font-size:22px;font-weight:700;margin:0;line-height:1.2">Terms of Service</h2>
-            <p style="font-size:13px;opacity:0.85;margin:4px 0 0">Rules and guidelines for using VocabMaster AI</p>
+            <p style="font-size:13px;opacity:0.85;margin:4px 0 0">Rules and guidelines for using Piyala</p>
           </div>
         </div>
       </div>
@@ -238,11 +238,11 @@ const COMPANY = (() => {
         <div class="cp-legal-card cp-reveal">
           <div class="cp-legal-section" id="terms-accept">
             <h3 class="cp-legal-h">1. Acceptance of Terms</h3>
-            <p class="cp-legal-p">By accessing or using VocabMaster AI ("the Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to all of these Terms, you may not access or use the Service. These Terms apply to all visitors, users, and others who access or use the Service.</p>
+            <p class="cp-legal-p">By accessing or using Piyala ("the Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to all of these Terms, you may not access or use the Service. These Terms apply to all visitors, users, and others who access or use the Service.</p>
           </div>
           <div class="cp-legal-section" id="terms-service">
             <h3 class="cp-legal-h">2. Description of Service</h3>
-            <p class="cp-legal-p">VocabMaster AI is an AI-powered vocabulary learning platform that provides:</p>
+            <p class="cp-legal-p">Piyala is an AI-powered vocabulary learning platform that provides:</p>
             <ul class="cp-legal-ul">
               <li>Word definitions, example sentences, and contextual learning materials</li>
               <li>Spaced repetition flashcards and quizzes</li>
@@ -275,18 +275,18 @@ const COMPANY = (() => {
           </div>
           <div class="cp-legal-section" id="terms-ip">
             <h3 class="cp-legal-h">5. Intellectual Property</h3>
-            <p class="cp-legal-p"><strong>Our Content.</strong> All content, code, design, graphics, text, and materials on VocabMaster AI are the intellectual property of VocabMaster AI and its licensors, unless otherwise noted. You may not copy, modify, distribute, sell, or create derivative works without prior written permission.</p>
-            <p class="cp-legal-p"><strong>Trademarks.</strong> "VocabMaster AI" and the VocabMaster logo are trademarks of VocabMaster AI. You may not use them without permission.</p>
+            <p class="cp-legal-p"><strong>Our Content.</strong> All content, code, design, graphics, text, and materials on Piyala are the intellectual property of Piyala and its licensors, unless otherwise noted. You may not copy, modify, distribute, sell, or create derivative works without prior written permission.</p>
+            <p class="cp-legal-p"><strong>Trademarks.</strong> "Piyala" and the Piyala logo are trademarks of Piyala. You may not use them without permission.</p>
             <p class="cp-legal-p"><strong>Feedback.</strong> If you provide feedback or suggestions, you grant us a non-exclusive, royalty-free, perpetual license to use them without restriction.</p>
           </div>
           <div class="cp-legal-section" id="terms-content">
             <h3 class="cp-legal-h">6. User Content</h3>
-            <p class="cp-legal-p">You retain ownership of any content you submit, post, or display through the Service (such as study notes or lists). By submitting content, you grant VocabMaster AI a worldwide, non-exclusive, royalty-free license to use, reproduce, and display that content solely for the purpose of operating and improving the Service.</p>
+            <p class="cp-legal-p">You retain ownership of any content you submit, post, or display through the Service (such as study notes or lists). By submitting content, you grant Piyala a worldwide, non-exclusive, royalty-free license to use, reproduce, and display that content solely for the purpose of operating and improving the Service.</p>
             <p class="cp-legal-p">You represent and warrant that your content does not infringe the rights of any third party.</p>
           </div>
           <div class="cp-legal-section" id="terms-third">
             <h3 class="cp-legal-h">7. Third-Party Services</h3>
-            <p class="cp-legal-p">The Service integrates with third-party APIs and services, including Groq AI, Dictionary API, Datamuse, Neon, and Telegram. Your use of these services is subject to their respective terms. VocabMaster AI is not responsible for the availability, accuracy, or performance of third-party services.</p>
+            <p class="cp-legal-p">The Service integrates with third-party APIs and services, including Groq AI, Dictionary API, Datamuse, Neon, and Telegram. Your use of these services is subject to their respective terms. Piyala is not responsible for the availability, accuracy, or performance of third-party services.</p>
           </div>
           <div class="cp-legal-section" id="terms-privacy">
             <h3 class="cp-legal-h">8. Privacy</h3>
@@ -295,16 +295,16 @@ const COMPANY = (() => {
           <div class="cp-legal-section" id="terms-warranty">
             <h3 class="cp-legal-h">9. Disclaimer of Warranties</h3>
             <p class="cp-legal-p">THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED, ERROR-FREE, SECURE, OR FREE OF VIRUSES.</p>
-            <p class="cp-legal-p">VocabMaster AI is an educational tool and does not guarantee specific learning outcomes or language proficiency.</p>
+            <p class="cp-legal-p">Piyala is an educational tool and does not guarantee specific learning outcomes or language proficiency.</p>
           </div>
           <div class="cp-legal-section" id="terms-liability">
             <h3 class="cp-legal-h">10. Limitation of Liability</h3>
-            <p class="cp-legal-p">TO THE MAXIMUM EXTENT PERMITTED BY LAW, VOCABMASTER AI, ITS AFFILIATES, AND THEIR RESPECTIVE OFFICERS, DIRECTORS, EMPLOYEES, AND AGENTS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF OR RELATED TO YOUR USE OF THE SERVICE, WHETHER BASED ON WARRANTY, CONTRACT, TORT (INCLUDING NEGLIGENCE), OR ANY OTHER LEGAL THEORY.</p>
+            <p class="cp-legal-p">TO THE MAXIMUM EXTENT PERMITTED BY LAW, Piyala, ITS AFFILIATES, AND THEIR RESPECTIVE OFFICERS, DIRECTORS, EMPLOYEES, AND AGENTS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF OR RELATED TO YOUR USE OF THE SERVICE, WHETHER BASED ON WARRANTY, CONTRACT, TORT (INCLUDING NEGLIGENCE), OR ANY OTHER LEGAL THEORY.</p>
             <p class="cp-legal-p">Our total liability for any claims under these Terms shall not exceed the amount you have paid us (if any) in the past 12 months.</p>
           </div>
           <div class="cp-legal-section" id="terms-indemnify">
             <h3 class="cp-legal-h">11. Indemnification</h3>
-            <p class="cp-legal-p">You agree to indemnify, defend, and hold harmless VocabMaster AI, its affiliates, and their respective officers, directors, employees, and agents from any claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or related to your use of the Service, your violation of these Terms, or your violation of any third-party rights.</p>
+            <p class="cp-legal-p">You agree to indemnify, defend, and hold harmless Piyala, its affiliates, and their respective officers, directors, employees, and agents from any claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or related to your use of the Service, your violation of these Terms, or your violation of any third-party rights.</p>
           </div>
           <div class="cp-legal-section" id="terms-termination">
             <h3 class="cp-legal-h">12. Termination</h3>
@@ -360,7 +360,7 @@ const COMPANY = (() => {
         <div class="cp-legal-card cp-reveal">
           <div class="cp-legal-section" id="cookies-what">
             <h3 class="cp-legal-h">1. What Are Cookies</h3>
-            <p class="cp-legal-p">Cookies are small text files that are placed on your device when you visit a website. They help the website function properly, improve your experience, and provide information to the site owners. VocabMaster AI uses cookies and similar technologies (localStorage, sessionStorage) to deliver and improve our service.</p>
+            <p class="cp-legal-p">Cookies are small text files that are placed on your device when you visit a website. They help the website function properly, improve your experience, and provide information to the site owners. Piyala uses cookies and similar technologies (localStorage, sessionStorage) to deliver and improve our service.</p>
           </div>
           <div class="cp-legal-section" id="cookies-types">
             <h3 class="cp-legal-h">2. Types of Cookies We Use</h3>
@@ -383,7 +383,7 @@ const COMPANY = (() => {
           </div>
           <div class="cp-legal-section" id="cookies-third">
             <h3 class="cp-legal-h">4. Third-Party Cookies</h3>
-            <p class="cp-legal-p">VocabMaster AI does not set third-party tracking cookies. The third-party services we integrate with (Groq AI, Dictionary API, Datamuse, Neon, Telegram) may set their own cookies in accordance with their respective privacy policies. We have no control over these cookies.</p>
+            <p class="cp-legal-p">Piyala does not set third-party tracking cookies. The third-party services we integrate with (Groq AI, Dictionary API, Datamuse, Neon, Telegram) may set their own cookies in accordance with their respective privacy policies. We have no control over these cookies.</p>
           </div>
           <div class="cp-legal-section" id="cookies-choices">
             <h3 class="cp-legal-h">5. Your Cookie Choices</h3>
@@ -394,7 +394,7 @@ const COMPANY = (() => {
               <li>Set your browser to notify you before accepting cookies</li>
               <li>Use incognito/private browsing mode</li>
             </ul>
-            <p class="cp-legal-p">Please note that blocking essential cookies may affect the functionality of VocabMaster AI. You can clear your localStorage data at any time from your browser's developer tools or by clearing your browsing data.</p>
+            <p class="cp-legal-p">Please note that blocking essential cookies may affect the functionality of Piyala. You can clear your localStorage data at any time from your browser's developer tools or by clearing your browsing data.</p>
           </div>
           <div class="cp-legal-section" id="cookies-contact">
             <h3 class="cp-legal-h">6. Contact Information</h3>

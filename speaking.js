@@ -1,5 +1,5 @@
 /* ==========================================================================
-   VocabMaster AI — Speaking Practice Module (v2)
+   Piyala — Speaking Practice Module (v2)
    Real-time peer-to-peer & AI speaking with WebRTC, SpeechRecognition, AI TTS
    ========================================================================== */
 
@@ -1708,7 +1708,7 @@ const SPEAKING = (() => {
             '#/speaking/with-people',
           );
         }
-        document.title = 'Speaking with People - VocabMaster AI';
+        document.title = 'Speaking with People - Piyala';
         const sc = document.getElementById('speaking-content');
         if (sc) {
           dom.html(sc,
