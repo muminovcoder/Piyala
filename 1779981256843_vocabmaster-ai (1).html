@@ -9414,6 +9414,12 @@ async function init() {
       setTimeout(heartbeat, 180000);
     })();
 
+    // Periodic premium sync (detect admin grants / payment approvals)
+    if (typeof syncPremiumFromServer === 'function') {
+      setInterval(function() {
+        if (state.authUser) syncPremiumFromServer().then(function(d) { if (d && d.tier) updateSidebarPlan(); });
+      }, 30000);
+    }
     // Admin check + notification polling
     SECURE_API.apiRequest('POST', '/api/auth/telegram/admin/check')
       .then(function(data) { state.isAdmin = data && data.isAdmin; updateAdminUI(); })
