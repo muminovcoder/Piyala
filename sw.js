@@ -16,8 +16,8 @@ addEventListener('activate', function(e) {
   );
 });
 addEventListener('fetch', function(e) {
+  if (e.request.method !== 'GET') return;
   var url = new URL(e.request.url);
-  // Only cache same-origin resources; skip external CDN (avoids CSP connect-src blocks)
   if (url.origin !== location.origin) return;
   if (url.pathname.match(/\.(js|css|html)$/)) {
     e.respondWith(
