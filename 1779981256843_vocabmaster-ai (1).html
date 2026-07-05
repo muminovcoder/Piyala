@@ -7099,6 +7099,11 @@ function showPage(id, sub) {
   }
   state.currentPage = id;
   injectBackButton();
+  if (typeof syncPremiumFromServer === 'function' && state.authUser && id !== 'premium') {
+    syncPremiumFromServer().then(function(data) {
+      if (data && data.tier) updateSidebarPlan();
+    });
+  }
   if (id === 'dashboard') { refreshDashboard(); }
   else if (id === 'explore') { initExplorePage(); }
   else if (id === 'flashcards') { initFlashcards(); }

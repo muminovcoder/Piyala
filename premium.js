@@ -513,6 +513,7 @@ async function submitPayment(tier, period) {
       document.getElementById('pm-card-number-input').disabled = true;
       document.getElementById('pm-phone-input').disabled = true;
       document.getElementById('pm-country').disabled = true;
+      startPremiumPolling();
     } else {
       throw new Error(result?.error || 'Failed to submit');
     }
@@ -522,6 +523,25 @@ async function submitPayment(tier, period) {
     status.innerHTML = '<i class="ti ti-circle-x"></i> Error: ' + err.message;
     btn.disabled = false;
     btn.innerHTML = '<i class="ti ti-check"></i> I Have Paid — Submit for Verification';
+  }
+}
+
+let _premiumPollTimer = null;
+function startPremiumPolling() {
+  stopPremiumPolling();
+  _premiumPollTimer = setInterval(async () => {
+    const data = await syncPremiumFromServer();
+    if (data && data.tier && data.tier !== 'Free') {
+      stopPremiumPolling();
+      toast('<i class="ti ti-crown"></i> Premium activated! Welcome to <strong>' + data.tier + '</strong>!', 'success', 5000);
+      if (typeof renderPremium === 'function') renderPremium();
+    }
+  }, 10000);
+}
+function stopPremiumPolling() {
+  if (_premiumPollTimer) {
+    clearInterval(_premiumPollTimer);
+    _premiumPollTimer = null;
   }
 }
 

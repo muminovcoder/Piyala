@@ -119,6 +119,7 @@ async function verifyTelegramCode() {
     localStorage.setItem('vm_username', userName);
     if (typeof updateAuthUI === 'function') updateAuthUI();
     if (typeof updateSidebarXP === 'function') updateSidebarXP();
+    if (typeof syncPremiumFromServer === 'function') syncPremiumFromServer();
 
     setTimeout(async () => {
       // Push local (anonymous) data to newly authenticated account first
@@ -220,6 +221,7 @@ async function submitTgLogin() {
     localStorage.setItem('vm_username', userName);
     if (typeof updateAuthUI === 'function') updateAuthUI();
     if (typeof updateSidebarXP === 'function') updateSidebarXP();
+    if (typeof syncPremiumFromServer === 'function') syncPremiumFromServer();
 
     setTimeout(async () => {
       // Push local (anonymous) data to newly authenticated account first
