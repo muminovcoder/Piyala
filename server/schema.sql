@@ -128,6 +128,15 @@ CREATE INDEX idx_token_blacklist_expires ON token_blacklist(expires_at);
 CREATE INDEX IF NOT EXISTS idx_users_telegram_id ON users(telegram_id);
 CREATE INDEX IF NOT EXISTS idx_users_phone ON users(phone);
 
+-- ===== FUNCTIONS & TRIGGERS =====
+CREATE OR REPLACE FUNCTION update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 -- ===== WORD AI CACHE TABLE =====
 CREATE TABLE IF NOT EXISTS word_ai_cache (
     word VARCHAR(255) PRIMARY KEY,
@@ -181,15 +190,6 @@ CREATE TABLE IF NOT EXISTS device_sessions (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
--- ===== FUNCTIONS & TRIGGERS =====
-CREATE OR REPLACE FUNCTION update_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_users_updated_at
     BEFORE UPDATE ON users
@@ -248,6 +248,8 @@ CREATE TABLE IF NOT EXISTS payment_requests (
     period VARCHAR(10) NOT NULL DEFAULT 'monthly',
     card_type VARCHAR(20) NOT NULL,
     card_number VARCHAR(30) NOT NULL,
+    phone VARCHAR(30) DEFAULT NULL,
+    country VARCHAR(10) DEFAULT NULL,
     status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
     admin_note TEXT DEFAULT '',
     created_at TIMESTAMPTZ DEFAULT NOW(),
