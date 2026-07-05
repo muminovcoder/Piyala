@@ -1,0 +1,64 @@
+# =============================================
+# VOCABMASTER AI — DOCKER COMPOSE
+# =============================================
+# Usage:
+#   docker compose up -d
+#   docker compose down
+#
+# Requires a .env file with DATABASE_URL and secrets
+# =============================================
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vocabmaster-ai
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    # Uncomment if using a local PostgreSQL container:
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+    # networks:
+    #   - vocabmaster-network
+
+  # Uncomment if you want a local PostgreSQL database:
+  # db:
+  #   image: postgres:16-alpine
+  #   container_name: vocabmaster-db
+  #   environment:
+  #     POSTGRES_DB: vocabmaster
+  #     POSTGRES_USER: vocabmaster
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+  #     - ./server/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+  #   ports:
+  #     - "5432:5432"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U vocabmaster"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   restart: unless-stopped
+  #   networks:
+  #     - vocabmaster-network
+
+# volumes:
+#   pgdata:
+
+# networks:
+#   vocabmaster-network:

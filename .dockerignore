@@ -1,0 +1,14 @@
+# =============================================
+# VOCABMASTER AI — .dockerignore
+# =============================================
+node_modules/
+.env
+.env.*
+.git
+.gitignore
+*.log
+.gitkeep
+.vscode/
+.idea/
+.docker/
+README.md

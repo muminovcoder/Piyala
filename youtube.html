@@ -1,0 +1,33 @@
+<div class="page-header">
+  <h2 class="page-title">▶️ StudyTube</h2>
+  <div class="page-subtitle">Curated educational English videos from 10 channels</div>
+</div>
+<div class="youtube-container">
+  <div class="youtube-search-wrap">
+    <input type="text" id="yt-search-input" class="youtube-search-input" placeholder="🔍 Search for educational videos in English..." />
+    <button class="youtube-search-btn" onclick="ytSearch()">🔍</button>
+  </div>
+
+  <div class="youtube-categories" id="yt-categories">
+    <button class="yt-cat pill active" onclick="ytFilter(this,'all')">All</button>
+    <button class="yt-cat pill" onclick="ytFilter(this,'english')">🇬🇧 English Learning</button>
+    <button class="yt-cat pill" onclick="ytFilter(this,'grammar')">📝 Grammar</button>
+    <button class="yt-cat pill" onclick="ytFilter(this,'vocabulary')">📚 Vocabulary</button>
+    <button class="yt-cat pill" onclick="ytFilter(this,'academic')">🎓 Academic</button>
+    <button class="yt-cat pill" onclick="ytFilter(this,'literature')">📖 Literature</button>
+    <button class="yt-cat pill" onclick="ytFilter(this,'pronunciation')">🗣️ Pronunciation</button>
+  </div>
+
+  <div class="youtube-video-grid" id="yt-video-grid"></div>
+
+  <div class="youtube-player-overlay" id="yt-player-overlay" onclick="if(event.target===this)ytClosePlayer()">
+    <div class="youtube-player-modal" onclick="event.stopPropagation()">
+      <button class="youtube-close-btn" onclick="ytClosePlayer()">✕</button>
+      <div class="youtube-player-wrap"></div>
+      <div class="yt-embed-fallback">
+        <span id="yt-error-msg" style="display:none">⚠️ Video player error</span>
+        <a id="yt-watch-link" href="#" target="_blank" rel="noopener" class="yt-watch-btn">▶ Watch on YouTube</a>
+      </div>
+    </div>
+  </div>
+</div>

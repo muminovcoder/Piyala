@@ -1,0 +1,18 @@
+# Security Contact
+Contact: mailto:security@vocabmasterai.site
+Contact: https://t.me/vocabmasterai
+
+# Policy
+Policy: https://vocabmasterai.site/company/privacy
+
+# Encryption
+Encryption: https://vocabmasterai.site/pgp-key.txt
+
+# Acknowledgments
+Acknowledgments: https://vocabmasterai.site/security-acknowledgments
+
+# Preferred Languages: en, uz, ru
+Preferred-Languages: en, uz, ru
+
+# Expiry
+Expires: 2027-06-01T00:00:00.000Z

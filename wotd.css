@@ -1,0 +1,162 @@
+.wotd-card {
+  --wotd-accent: #AF52DE;
+  background: var(--vm-glass-bg-subtle);
+  color: var(--ios-label);
+  backdrop-filter: blur(var(--glass-blur-md)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-md)) saturate(160%);
+  border: 1px solid var(--vm-glass-border);
+  border-radius: 18px;
+  padding: 22px 24px 18px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--vm-glass-shadow);
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.wotd-card:hover {
+  transform: translateY(-3px);
+  border-color: transparent;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.06), 0 0 0 1px rgba(255,255,255,0.05);
+}
+.wotd-card::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: 18px;
+  opacity: 0; transition: opacity 0.3s ease;
+  background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--wotd-accent) 60%, transparent), transparent 70%);
+  pointer-events: none;
+}
+.wotd-card:hover::before { opacity: 0.12; }
+.wotd-card::after {
+  content: '';
+  position: absolute; top: 0; left: 20px; right: 20px; height: 2px;
+  background: var(--wotd-accent); border-radius: 0 0 2px 2px;
+  opacity: 0.5;
+}
+
+.wotd-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.wotd-header-left {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: var(--ios-label);
+}
+.wotd-header-left i { font-size: 16px; }
+.wotd-header-right {
+  display: flex; align-items: center; gap: 8px;
+}
+.wotd-day-badge {
+  font-size: 10px; font-weight: 600;
+  color: var(--wotd-accent);
+  background: color-mix(in srgb, var(--wotd-accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--wotd-accent) 20%, transparent);
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+.wotd-word-wrap {
+  display: flex; align-items: baseline; gap: 10px;
+  flex-wrap: wrap; margin-bottom: 10px;
+}
+.wotd-word {
+  font-size: 32px; font-weight: 800;
+  font-family: var(--font-display, inherit);
+  color: var(--ios-label);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--wotd-accent), color-mix(in srgb, var(--wotd-accent) 60%, #fff));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: wotdPop 0.55s cubic-bezier(0.16,1,0.3,1) backwards;
+}
+.wotd-pos {
+  font-size: 11px; font-weight: 600;
+  padding: 2px 12px; border-radius: 20px;
+  border: 1px solid; background: var(--vm-glass-bg);
+  text-transform: lowercase;
+  animation: wotdFade 0.5s 0.1s ease backwards;
+}
+.wotd-phonetic {
+  font-size: 13px;
+  color: var(--ios-secondary-label);
+  font-family: var(--font-mono, monospace);
+  padding: 2px 0;
+  animation: wotdFade 0.5s 0.15s ease backwards;
+}
+
+.wotd-def {
+  font-size: 14px; color: var(--ios-label); line-height: 1.6;
+  margin-bottom: 10px; font-weight: 500;
+  padding: 0 2px;
+  animation: wotdFade 0.5s 0.2s ease backwards;
+}
+
+.wotd-example {
+  font-size: 13px; color: var(--ios-secondary-label); line-height: 1.6;
+  padding: 10px 14px;
+  background: var(--vm-glass-bg);
+  border: 1px solid var(--vm-glass-border);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  font-style: italic;
+  display: flex; align-items: flex-start; gap: 4px;
+  animation: wotdFade 0.5s 0.25s ease backwards;
+}
+
+.wotd-syns {
+  display: flex; flex-wrap: wrap; gap: 4px 8px;
+  align-items: baseline;
+  animation: wotdFade 0.5s 0.3s ease backwards;
+}
+.wotd-tag-label {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 2px;
+}
+.wotd-tag {
+  font-size: 12px; padding: 2px 10px; border-radius: 14px;
+  background: var(--vm-glass-bg);
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.5;
+}
+.wotd-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.wotd-footer {
+  display: flex; gap: 6px; margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--vm-glass-border);
+  animation: wotdFade 0.5s 0.35s ease backwards;
+}
+.wotd-action-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--vm-glass-bg);
+  border: 1px solid var(--vm-glass-border);
+  color: var(--ios-secondary-label);
+  cursor: pointer; font-size: 15px;
+  transition: all 0.15s ease;
+}
+.wotd-action-btn:hover {
+  border-color: var(--wotd-accent);
+  color: var(--wotd-accent);
+  background: color-mix(in srgb, var(--wotd-accent) 8%, transparent);
+  transform: scale(1.05);
+}
+.wotd-action-btn:active { transform: scale(0.92); }
+.wotd-action-btn.saved { color: #FF375F; }
+.wotd-action-btn.learned { color: #AF52DE; }
+
+@keyframes wotdPop {
+  0% { opacity: 0; transform: scale(0.85) translateY(8px); filter: blur(6px); }
+  60% { transform: scale(1.02) translateY(-2px); filter: blur(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+}
+@keyframes wotdFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,52 @@
+# =============================================
+# VOCABMASTER AI — Render.com Deployment Config (Docker)
+# =============================================
+services:
+  - type: web
+    name: vocabmaster-ai
+    env: docker
+    region: frankfurt
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3001"
+      - key: DATABASE_URL
+        sync: false
+      - key: ACCESS_TOKEN_SECRET
+        generateValue: true
+      - key: REFRESH_TOKEN_SECRET
+        generateValue: true
+      - key: COOKIE_SECRET
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+      - key: ACCESS_TOKEN_EXPIRY
+        value: "15m"
+      - key: REFRESH_TOKEN_EXPIRY
+        value: "7d"
+      - key: CORS_ORIGIN
+        value: https://vocabmasterai.site
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: RATE_LIMIT_MAX
+        value: "100"
+      - key: AUTH_RATE_LIMIT_MAX
+        value: "10"
+      - key: LOG_LEVEL
+        value: warn
+      - key: GROQ_KEY_1
+        sync: false
+      - key: GROQ_KEY_2
+        sync: false
+      - key: GROQ_KEY_3
+        sync: false
+      - key: GROQ_KEY_4
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_BOT_USERNAME
+        value: vocabmasterverifybot
