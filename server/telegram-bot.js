@@ -233,10 +233,11 @@ async function handleAdminCallback(query) {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [
-          [{ text: '📊 Bot & Website Stats', callback_data: 'admin_stats' }],
-          [{ text: '🎁 Give Premium to User', callback_data: 'admin_give_premium' }],
-          [{ text: '📋 List Premium Users', callback_data: 'admin_list_premium' }],
+        [{ text: '📊 Bot & Website Stats', callback_data: 'admin_stats' }],
+        [{ text: '🎁 Give Premium to User', callback_data: 'admin_give_premium' }],
+        [{ text: '📋 List Premium Users', callback_data: 'admin_list_premium' }],
         [{ text: '🆕 Pending Payments', callback_data: 'admin_pending_payments' }],
+        [{ text: '🔧 Verify & Fix Premium', callback_data: 'admin_verify_premium' }],
         [{ text: '📢 Broadcast to Website', callback_data: 'admin_broadcast' }],
         [{ text: '🌐 Open Website', url: 'https://vocabmasterai.site' }],
         ],
@@ -291,6 +292,49 @@ async function handleAdminCallback(query) {
       });
       await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Xatolik yuz berdi', show_alert: true });
     }
+  }
+
+  // Verify & Fix Premium
+  else if (data === 'admin_verify_premium') {
+    await tgApi('editMessageText', {
+      chat_id: chatId,
+      message_id: messageId,
+      text: `🔧 *Verifying Premium Users...*\n\nChecking all premium users for inconsistencies...`,
+      parse_mode: 'Markdown',
+      reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Admin', callback_data: 'admin_back' }]] },
+    });
+    const result = await backendCall('/api/auth/telegram/admin/verify-premium', {});
+    if (result && result.success) {
+      let text = `🔧 *Premium Verification Complete*\n\n`;
+      text += `📊 *Premium users:* ${result.totalPremiumUsers}\n`;
+      text += `🔧 *Fixes applied:* ${result.fixesApplied}\n`;
+      text += `📨 *Users notified:* ${result.usersNotified}\n\n`;
+      if (result.fixesApplied > 0 && result.fixes.length > 0) {
+        text += `*Details:*\n`;
+        result.fixes.forEach(function(f, i) {
+          text += `${i+1}. \`${f.displayName}\` — *${f.tier}*\n`;
+          text += `   ⚠️ ${f.issue} → ✅ ${f.fix}\n`;
+        });
+      } else {
+        text += `✅ All premium users are consistent. No fixes needed.`;
+      }
+      await tgApi('editMessageText', {
+        chat_id: chatId,
+        message_id: messageId,
+        text,
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Admin', callback_data: 'admin_back' }]] },
+      });
+    } else {
+      await tgApi('editMessageText', {
+        chat_id: chatId,
+        message_id: messageId,
+        text: `❌ Verification failed: ${result?.error || 'Backend error'}`,
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Admin', callback_data: 'admin_back' }]] },
+      });
+    }
+    await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Verification complete' });
   }
 
   // Payment approve
@@ -392,6 +436,7 @@ async function handleAdminMessage(msg) {
         [{ text: '🎁 Give Premium to User', callback_data: 'admin_give_premium' }],
         [{ text: '📋 List Premium Users', callback_data: 'admin_list_premium' }],
         [{ text: '🆕 Pending Payments', callback_data: 'admin_pending_payments' }],
+        [{ text: '🔧 Verify & Fix Premium', callback_data: 'admin_verify_premium' }],
         [{ text: '📢 Broadcast to Website', callback_data: 'admin_broadcast' }],
         [{ text: '🌐 Open Website', url: 'https://vocabmasterai.site' }],
       ]

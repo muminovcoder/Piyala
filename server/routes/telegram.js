@@ -1115,4 +1115,173 @@ router.get('/admin/pending-payments', async (req, res) => {
   }
 });
 
+// ============================================================
+// POST /api/auth/telegram/admin/verify-premium
+// Check all premium users for inconsistencies and fix them
+// ============================================================
+router.post('/admin/verify-premium', async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT id, username, display_name, premium_tier, premium_granted_at,
+              premium_expires_at, premium_granted_by, telegram_chat_id
+       FROM users WHERE premium_tier != 'Free'
+       ORDER BY premium_granted_at DESC`
+    ).catch(() => ({ rows: [] }));
+
+    const fixes = [];
+    const notified = [];
+
+    for (const user of result.rows) {
+      const userId = user.id;
+      const tier = user.premium_tier;
+      const isExpired = user.premium_expires_at && new Date(user.premium_expires_at) <= new Date();
+      let fixed = false;
+
+      // Check 1: expired premium → downgrade to Free
+      if (isExpired) {
+        await query(
+          `UPDATE users SET premium_tier = 'Free', premium_granted_at = NULL,
+           premium_granted_by = NULL, premium_expires_at = NULL
+           WHERE id = $1`,
+          [userId]
+        );
+        fixes.push({
+          userId,
+          displayName: user.display_name || user.username,
+          tier,
+          issue: 'expired',
+          fix: 'downgraded to Free',
+        });
+        fixed = true;
+      }
+
+      // Check 2: premium_tier set but no premium_grants record
+      if (!fixed) {
+        const grantCheck = await query(
+          'SELECT id FROM premium_grants WHERE user_id = $1 LIMIT 1',
+          [userId]
+        ).catch(() => ({ rows: [] }));
+
+        if (grantCheck.rows.length === 0) {
+          await query(
+            `INSERT INTO premium_grants (user_id, tier, granted_by, notes)
+             VALUES ($1, $2, $3, 'Auto-fixed by verify-premium')`,
+            [userId, tier, user.premium_granted_by]
+          ).catch(() => {});
+          fixes.push({
+            userId,
+            displayName: user.display_name || user.username,
+            tier,
+            issue: 'missing grant record',
+            fix: 'premium_grants entry created',
+          });
+        }
+      }
+
+      // Check 3: premium_tier set but premium_granted_at is null
+      if (!fixed && !user.premium_granted_at) {
+        await query(
+          `UPDATE users SET premium_granted_at = NOW() WHERE id = $1`,
+          [userId]
+        );
+        fixes.push({
+          userId,
+          displayName: user.display_name || user.username,
+          tier,
+          issue: 'missing granted_at',
+          fix: 'premium_granted_at set to NOW()',
+        });
+      }
+
+      // Notify the user if any fix was applied and they have a Telegram chat
+      if (fixed && user.telegram_chat_id) {
+        const botToken = process.env.TELEGRAM_BOT_TOKEN;
+        if (botToken) {
+          const https = require('https');
+          const payload = JSON.stringify({
+            chat_id: user.telegram_chat_id,
+            text: `🔧 *Premium Status Fixed*\n\nYour premium account had an issue which has been automatically resolved.\n\nPlease refresh the website or re-login to activate your premium features.\n\n[Open Piyala](https://vocabmasterai.site)`,
+            parse_mode: 'Markdown',
+            disable_web_page_preview: true,
+          });
+          const opts = {
+            hostname: 'api.telegram.org',
+            path: `/bot${botToken}/sendMessage`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
+          };
+          const req = https.request(opts, () => {});
+          req.on('error', () => {});
+          req.write(payload);
+          req.end();
+          notified.push(userId);
+        }
+      }
+    }
+
+    // Check 4: reverse — premium_grants records where user's tier is 'Free'
+    const orphanGrants = await query(
+      `SELECT pg.id, pg.user_id, pg.tier, u.display_name, u.username
+       FROM premium_grants pg
+       JOIN users u ON u.id = pg.user_id
+       WHERE u.premium_tier = 'Free'`
+    ).catch(() => ({ rows: [] }));
+
+    for (const grant of orphanGrants.rows) {
+      await query(
+        `UPDATE users SET premium_tier = $1, premium_granted_at = NOW()
+         WHERE id = $2 AND premium_tier = 'Free'`,
+        [grant.tier, grant.user_id]
+      );
+      fixes.push({
+        userId: grant.user_id,
+        displayName: grant.display_name || grant.username,
+        tier: grant.tier,
+        issue: 'orphan grant (user was Free)',
+        fix: 'premium_tier restored from premium_grants',
+      });
+
+      // Notify restored user
+      const userChat = await query(
+        'SELECT telegram_chat_id FROM users WHERE id = $1 LIMIT 1',
+        [grant.user_id]
+      ).catch(() => ({ rows: [] }));
+      if (userChat.rows.length > 0 && userChat.rows[0].telegram_chat_id) {
+        const botToken = process.env.TELEGRAM_BOT_TOKEN;
+        if (botToken) {
+          const https = require('https');
+          const payload = JSON.stringify({
+            chat_id: userChat.rows[0].telegram_chat_id,
+            text: `🔄 *Premium Restored*\n\nYour *${grant.tier}* premium was not active on your account but has been restored.\n\nPlease refresh the website or re-login to use premium features.\n\n[Open Piyala](https://vocabmasterai.site)`,
+            parse_mode: 'Markdown',
+            disable_web_page_preview: true,
+          });
+          const opts = {
+            hostname: 'api.telegram.org',
+            path: `/bot${botToken}/sendMessage`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
+          };
+          const req = https.request(opts, () => {});
+          req.on('error', () => {});
+          req.write(payload);
+          req.end();
+          notified.push(grant.user_id);
+        }
+      }
+    }
+
+    res.json({
+      success: true,
+      totalPremiumUsers: result.rows.length,
+      fixesApplied: fixes.length,
+      usersNotified: notified.length,
+      fixes,
+    });
+  } catch (err) {
+    console.error('verify-premium error:', err.message);
+    res.json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;
