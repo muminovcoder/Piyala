@@ -31,6 +31,7 @@ const securityHeaders = helmet({
         'ws://localhost:3001',
         'ws://127.0.0.1:3001',
         'wss://vocabmasterai.site',
+        'wss://piyala.onrender.com',
         'https://api.dictionaryapi.dev',
         'https://api.datamuse.com',
         'https://unpkg.com',
@@ -75,6 +76,8 @@ const corsOptions = {
       'http://localhost:3000',
       'http://localhost:3001',
       'https://vocabmasterai.site', // ✅ Custom domain
+      'https://piyala.onrender.com', // ✅ Render deployment
+      'https://www.piyala.onrender.com',
     ];
     // Allow requests with no origin (file://, curl, server-to-server)
     if (!origin || allowedOrigins.includes(origin)) {
