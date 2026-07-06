@@ -114,10 +114,13 @@ async function handleStart(update) {
     await sendKeyboard(chatId,
       `👑 *Admin Panel — Piyala*\n\nWelcome back, *${firstName}!*\n\nChoose an option:`,
       [
+        [{ text: '📊 Full System Status', callback_data: 'admin_full_status' }],
         [{ text: '📊 Bot & Website Stats', callback_data: 'admin_stats' }],
         [{ text: '🎁 Give Premium to User', callback_data: 'admin_give_premium' }],
         [{ text: '📋 List Premium Users', callback_data: 'admin_list_premium' }],
         [{ text: '🆕 Pending Payments', callback_data: 'admin_pending_payments' }],
+        [{ text: '🔧 Verify & Fix Premium', callback_data: 'admin_verify_premium' }],
+        [{ text: '🗑 Delete Data', callback_data: 'admin_delete_menu' }],
         [{ text: '📢 Broadcast to Website', callback_data: 'admin_broadcast' }],
         [{ text: '🌐 Open Website', url: 'https://vocabmasterai.site' }],
       ]
@@ -144,6 +147,8 @@ async function handleAdminCallback(query) {
     });
     return;
   }
+
+  try {
 
   if (data === 'admin_stats') {
     const stats = await backendGet('/api/auth/telegram/admin/stats');
@@ -233,11 +238,13 @@ async function handleAdminCallback(query) {
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [
+        [{ text: '📊 Full System Status', callback_data: 'admin_full_status' }],
         [{ text: '📊 Bot & Website Stats', callback_data: 'admin_stats' }],
         [{ text: '🎁 Give Premium to User', callback_data: 'admin_give_premium' }],
         [{ text: '📋 List Premium Users', callback_data: 'admin_list_premium' }],
         [{ text: '🆕 Pending Payments', callback_data: 'admin_pending_payments' }],
         [{ text: '🔧 Verify & Fix Premium', callback_data: 'admin_verify_premium' }],
+        [{ text: '🗑 Delete Data', callback_data: 'admin_delete_menu' }],
         [{ text: '📢 Broadcast to Website', callback_data: 'admin_broadcast' }],
         [{ text: '🌐 Open Website', url: 'https://vocabmasterai.site' }],
         ],
@@ -337,6 +344,235 @@ async function handleAdminCallback(query) {
     await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Verification complete' });
   }
 
+  // Full System Status
+  else if (data === 'admin_full_status') {
+    await tgApi('editMessageText', {
+      chat_id: chatId,
+      message_id: messageId,
+      text: `📊 *Fetching system status...*`,
+      parse_mode: 'Markdown',
+    });
+    const result = await backendCall('/api/auth/telegram/admin/status', {});
+    if (result && result.success) {
+      let text = `📊 *Piyala — Full System Status*\n\n`;
+      text += `🕐 *Time:* \`${result.timestamp}\`\n`;
+      text += `⚡ *Response:* ${result.responseTimeMs}ms\n\n`;
+      text += `▫️ *DATABASE*\n`;
+      text += `   ${result.database.connected ? '✅ Connected' : '❌ Disconnected'}\n\n`;
+      text += `▫️ *COUNTS*\n`;
+      text += `   👥 Users: \`${result.counts.users}\`\n`;
+      text += `   👑 Premium: \`${result.counts.premiumUsers}\`\n`;
+      text += `   🤖 Bot users: \`${result.counts.botUsers}\`\n`;
+      text += `   💳 Pending payments: \`${result.counts.pendingPayments}\`\n`;
+      text += `   ✅ Approved payments: \`${result.counts.approvedPayments}\`\n`;
+      text += `   🏆 Premium grants: \`${result.counts.premiumGrants}\`\n`;
+      text += `   📱 Device sessions: \`${result.counts.activeSessions}\`\n\n`;
+      if (result.latestUser) {
+        text += `▫️ *Latest registration:*\n`;
+        text += `   👤 \`${result.latestUser.username}\` (${new Date(result.latestUser.created_at).toLocaleString()})\n`;
+      }
+      await tgApi('editMessageText', {
+        chat_id: chatId,
+        message_id: messageId,
+        text,
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '🔄 Refresh', callback_data: 'admin_full_status' }],
+            [{ text: '🔙 Back to Admin', callback_data: 'admin_back' }],
+          ],
+        },
+      });
+    } else {
+      await tgApi('editMessageText', {
+        chat_id: chatId,
+        message_id: messageId,
+        text: '❌ Failed to get status',
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Admin', callback_data: 'admin_back' }]] },
+      });
+    }
+    await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Status fetched' });
+  }
+
+  // Delete Data Menu
+  else if (data === 'admin_delete_menu') {
+    await tgApi('editMessageText', {
+      chat_id: chatId,
+      message_id: messageId,
+      text: '🗑 *Delete Data*\n\nChoose what to delete:',
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '👤 Delete User by ID', callback_data: 'admin_delete_user' }],
+          [{ text: '💳 Delete Payment Request', callback_data: 'admin_delete_payment' }],
+          [{ text: '👑 Remove Premium from User', callback_data: 'admin_remove_premium' }],
+          [{ text: '🗑 All Pending Payments', callback_data: 'admin_delete_all_pending' }],
+          [{ text: '📱 All Device Sessions', callback_data: 'admin_delete_sessions' }],
+          [{ text: '🔙 Back to Admin', callback_data: 'admin_back' }],
+        ],
+      },
+    });
+    await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Choose what to delete' });
+  }
+
+  // Delete sub-actions
+  else if (data === 'admin_delete_user') {
+    pendingAdminActions.set(chatId, { action: 'awaiting_delete_user_id' });
+    await tgApi('editMessageText', {
+      chat_id: chatId,
+      message_id: messageId,
+      text: '🗑 *Delete User*\n\nSend me the *User ID* (UUID or short ID) of the user to delete.\n\n⚠️ This will permanently delete the user and all their data!\n\nTo cancel, send /cancel',
+      parse_mode: 'Markdown',
+      reply_markup: { inline_keyboard: [[{ text: '🔙 Cancel', callback_data: 'admin_back' }]] },
+    });
+    await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Enter user ID' });
+  }
+
+  else if (data === 'admin_delete_payment') {
+    pendingAdminActions.set(chatId, { action: 'awaiting_delete_payment_id' });
+    await tgApi('editMessageText', {
+      chat_id: chatId,
+      message_id: messageId,
+      text: '🗑 *Delete Payment Request*\n\nSend me the *Payment ID* (UUID) to delete.\n\nTo cancel, send /cancel',
+      parse_mode: 'Markdown',
+      reply_markup: { inline_keyboard: [[{ text: '🔙 Cancel', callback_data: 'admin_back' }]] },
+    });
+    await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Enter payment ID' });
+  }
+
+  else if (data === 'admin_remove_premium') {
+    pendingAdminActions.set(chatId, { action: 'awaiting_remove_premium_id' });
+    await tgApi('editMessageText', {
+      chat_id: chatId,
+      message_id: messageId,
+      text: '👑 *Remove Premium from User*\n\nSend me the *User ID* (UUID or short ID) to remove premium from.\n\nTo cancel, send /cancel',
+      parse_mode: 'Markdown',
+      reply_markup: { inline_keyboard: [[{ text: '🔙 Cancel', callback_data: 'admin_back' }]] },
+    });
+    await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Enter user ID' });
+  }
+
+  else if (data === 'admin_delete_all_pending') {
+    pendingAdminActions.set(chatId, { action: 'confirm_delete_all_pending' });
+    await tgApi('editMessageText', {
+      chat_id: chatId,
+      message_id: messageId,
+      text: '⚠️ *Are you sure?*\n\nThis will delete ALL pending payment requests.\n\nThis action cannot be undone!',
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '✅ Yes, Delete All', callback_data: 'admin_confirm_delete_all_pending' }],
+          [{ text: '🔙 Cancel', callback_data: 'admin_back' }],
+        ],
+      },
+    });
+    await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Confirm?' });
+  }
+
+  else if (data === 'admin_confirm_delete_all_pending') {
+    const result = await backendCall('/api/auth/telegram/admin/delete-data', { target: 'all_pending_payments' });
+    if (result && result.success) {
+      await tgApi('editMessageText', {
+        chat_id: chatId,
+        message_id: messageId,
+        text: '✅ Deleted `' + result.deleted + '` pending payment requests.',
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Admin', callback_data: 'admin_back' }]] },
+      });
+    } else {
+      await tgApi('editMessageText', {
+        chat_id: chatId,
+        message_id: messageId,
+        text: '❌ Failed: ' + (result?.error || 'Error'),
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Admin', callback_data: 'admin_back' }]] },
+      });
+    }
+    await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Done' });
+  }
+
+  else if (data === 'admin_delete_sessions') {
+    pendingAdminActions.set(chatId, { action: 'confirm_delete_sessions' });
+    await tgApi('editMessageText', {
+      chat_id: chatId,
+      message_id: messageId,
+      text: '⚠️ *Are you sure?*\n\nThis will delete ALL anonymous device sessions.\n\nUsers will lose their anonymous progress unless they are logged in.\n\nThis action cannot be undone!',
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '✅ Yes, Delete All', callback_data: 'admin_confirm_delete_sessions' }],
+          [{ text: '🔙 Cancel', callback_data: 'admin_back' }],
+        ],
+      },
+    });
+    await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Confirm?' });
+  }
+
+  else if (data === 'admin_confirm_delete_user') {
+    const pendingAction = pendingAdminActions.get(chatId);
+    const targetUserId = pendingAction ? pendingAction.targetUserId : null;
+    pendingAdminActions.delete(chatId);
+    if (!targetUserId) {
+      await tgApi('editMessageText', {
+        chat_id: chatId,
+        message_id: messageId,
+        text: '❌ Session expired. Please try again.',
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Admin', callback_data: 'admin_back' }]] },
+      });
+      await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Session expired', show_alert: true });
+      return;
+    }
+    const result = await backendCall('/api/auth/telegram/admin/delete-data', { target: 'user', userId: targetUserId });
+    if (result && result.success) {
+      let text = `✅ *User Deleted*\n\nDeleted \`${targetUserId}\` successfully.\n\n`;
+      text += `📊 Records removed:\n`;
+      text += `   • Premium grants: ${result.details?.premiumGrantsDeleted || 0}\n`;
+      text += `   • Payment requests: ${result.details?.paymentRequestsDeleted || 0}\n`;
+      text += `   • Device sessions: ${result.details?.sessionsDeleted || 0}\n`;
+      text += `   • Bot data: ${result.details?.botDataDeleted || 0}`;
+      await tgApi('editMessageText', {
+        chat_id: chatId,
+        message_id: messageId,
+        text,
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Admin', callback_data: 'admin_back' }]] },
+      });
+    } else {
+      await tgApi('editMessageText', {
+        chat_id: chatId,
+        message_id: messageId,
+        text: '❌ Failed: ' + (result?.error || 'Error'),
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Admin', callback_data: 'admin_back' }]] },
+      });
+    }
+    await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Done' });
+  }
+
+  else if (data === 'admin_confirm_delete_sessions') {
+    const result = await backendCall('/api/auth/telegram/admin/delete-data', { target: 'all_sessions' });
+    if (result && result.success) {
+      await tgApi('editMessageText', {
+        chat_id: chatId,
+        message_id: messageId,
+        text: '✅ Deleted `' + result.deleted + '` device sessions.',
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Admin', callback_data: 'admin_back' }]] },
+      });
+    } else {
+      await tgApi('editMessageText', {
+        chat_id: chatId,
+        message_id: messageId,
+        text: '❌ Failed: ' + (result?.error || 'Error'),
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Admin', callback_data: 'admin_back' }]] },
+      });
+    }
+    await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Done' });
+  }
+
   // Payment approve
   else if (data.startsWith('payment_approve_')) {
     const paymentId = data.replace('payment_approve_', '');
@@ -373,7 +609,7 @@ async function handleAdminCallback(query) {
   else if (data.startsWith('premium_tier_')) {
     const tier = data.replace('premium_tier_', '');
     const pendingAction = pendingAdminActions.get(chatId);
-    if (!pendingAction || !pendingAction.targetUserId) {
+    if (!pendingAction || !pendingAction.targetUserId || pendingAction.action !== 'awaiting_tier') {
       await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Session expired. Use /givepremium again.', show_alert: true });
       return;
     }
@@ -407,14 +643,21 @@ async function handleAdminCallback(query) {
     }
     pendingAdminActions.delete(chatId);
   }
+  } catch (e) {
+    console.error('Admin callback error:', e.message);
+    try { await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Error: ' + e.message, show_alert: true }); } catch (_) {}
+  }
 }
 
 async function handleAdminMessage(msg) {
   const user = msg.from;
   const chatId = msg.chat.id;
+  if (!msg.text || !msg.text.trim()) return;
   const text = msg.text.trim();
 
   if (user.id !== ADMIN_ID) return;
+
+  try {
 
   // Handle /cancel
   if (text.toLowerCase() === '/cancel') {
@@ -432,11 +675,13 @@ async function handleAdminMessage(msg) {
     await sendKeyboard(chatId,
       `👑 *Admin Panel — Piyala*\n\nWelcome back!\n\nChoose an option:`,
       [
+        [{ text: '📊 Full System Status', callback_data: 'admin_full_status' }],
         [{ text: '📊 Bot & Website Stats', callback_data: 'admin_stats' }],
         [{ text: '🎁 Give Premium to User', callback_data: 'admin_give_premium' }],
         [{ text: '📋 List Premium Users', callback_data: 'admin_list_premium' }],
         [{ text: '🆕 Pending Payments', callback_data: 'admin_pending_payments' }],
         [{ text: '🔧 Verify & Fix Premium', callback_data: 'admin_verify_premium' }],
+        [{ text: '🗑 Delete Data', callback_data: 'admin_delete_menu' }],
         [{ text: '📢 Broadcast to Website', callback_data: 'admin_broadcast' }],
         [{ text: '🌐 Open Website', url: 'https://vocabmasterai.site' }],
       ]
@@ -467,6 +712,7 @@ async function handleAdminMessage(msg) {
 
   // Handle /stats command
   if (text.toLowerCase() === '/stats') {
+    pendingAdminActions.delete(chatId);
     const stats = await backendGet('/api/auth/telegram/admin/stats');
     if (!stats) {
       await sendMessage(chatId, '❌ Failed to fetch stats. Is the backend running?', {});
@@ -546,6 +792,68 @@ async function handleAdminMessage(msg) {
     );
     return;
   }
+
+  // Handle delete user by ID
+  if (pendingAction && pendingAction.action === 'awaiting_delete_user_id') {
+    const targetUserId = text.trim();
+    pendingAdminActions.set(chatId, { action: 'confirm_delete_user', targetUserId });
+    await sendKeyboard(chatId,
+      `⚠️ *Confirm Deletion*\n\nAre you sure you want to permanently delete user \`${targetUserId}\` and all their data?\n\nThis action CANNOT be undone!`,
+      [
+        [{ text: '✅ Yes, Delete', callback_data: 'admin_confirm_delete_user' }],
+        [{ text: '🔙 Cancel', callback_data: 'admin_back' }],
+      ]
+    );
+    return;
+  }
+
+  // Handle delete payment by ID
+  if (pendingAction && pendingAction.action === 'awaiting_delete_payment_id') {
+    const paymentId = text.trim();
+    pendingAdminActions.delete(chatId);
+    const result = await backendCall('/api/auth/telegram/admin/delete-data', { target: 'payment_request', paymentId });
+    if (result && result.success) {
+      await sendMessage(chatId,
+        `✅ *Payment Request Deleted*\n\nID: \`${paymentId}\``,
+        { parse_mode: 'Markdown' }
+      );
+    } else {
+      await sendMessage(chatId,
+        `❌ *Failed*: ${result?.error || 'Error deleting payment request'}`,
+        { parse_mode: 'Markdown' }
+      );
+    }
+    return;
+  }
+
+  // Handle remove premium from user
+  if (pendingAction && pendingAction.action === 'awaiting_remove_premium_id') {
+    const targetUserId = text.trim();
+    pendingAdminActions.delete(chatId);
+    const result = await backendCall('/api/auth/telegram/admin/delete-data', { target: 'premium_from_user', userId: targetUserId });
+    if (result && result.success) {
+      await sendMessage(chatId,
+        `✅ *Premium Removed*\n\nUser: \`${targetUserId}\`\nRemoved ${result.deleted || 0} premium record(s).`,
+        { parse_mode: 'Markdown' }
+      );
+      if (result.userNotified) {
+        await sendMessage(chatId,
+          `📨 The user has been notified about the change.`,
+          { parse_mode: 'Markdown' }
+        );
+      }
+    } else {
+      await sendMessage(chatId,
+        `❌ *Failed*: ${result?.error || 'Error removing premium'}`,
+        { parse_mode: 'Markdown' }
+      );
+    }
+    return;
+  }
+  } catch (e) {
+    console.error('Admin message error:', e.message);
+    try { await sendMessage(chatId, '❌ Error: ' + e.message, {}); } catch (_) {}
+  }
 }
 
 async function handleUpdate(update) {
@@ -590,7 +898,7 @@ async function poll() {
         console.log(`Got ${result.result.length} update(s)`);
         for (const update of result.result) {
           if (update.update_id > lastUpdateId) lastUpdateId = update.update_id;
-          handleUpdate(update);
+          try { await handleUpdate(update); } catch (e) { console.error('handleUpdate error:', e.message); }
         }
       }
     } else if (result && !result.ok) {

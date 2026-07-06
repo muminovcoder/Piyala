@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const https = require('https');
 const bcrypt = require('bcrypt');
 
-const { query, transaction } = require('../config/db');
+const { query, transaction, pool } = require('../config/db');
 const {
   generateAccessToken,
   generateRefreshToken,
@@ -674,6 +674,16 @@ router.post('/admin/give-premium', async (req, res) => {
     if (adminUser && adminUser.rows.length > 0) {
       adminUuid = adminUser.rows[0].id;
     }
+    if (!adminUuid) {
+      // Try telegram_bot_users — lookup by telegram_id, then find user by username
+      const botUser = await query(
+        'SELECT user_id FROM telegram_bot_users WHERE telegram_id = $1 LIMIT 1',
+        [String(grantedByAdminId)]
+      ).catch(() => null);
+      if (botUser && botUser.rows.length > 0 && botUser.rows[0].user_id) {
+        adminUuid = botUser.rows[0].user_id;
+      }
+    }
 
     // Grant premium
     await query(
@@ -1280,6 +1290,161 @@ router.post('/admin/verify-premium', async (req, res) => {
     });
   } catch (err) {
     console.error('verify-premium error:', err.message);
+    res.json({ success: false, error: err.message });
+  }
+});
+
+// ============================================================
+// POST /api/auth/telegram/admin/status
+// Full system status — website, DB, bot, counts
+// ============================================================
+router.post('/admin/status', async (req, res) => {
+  try {
+    const startTime = Date.now();
+
+    // DB health
+    let dbOk = false;
+    try { await pool.query('SELECT 1'); dbOk = true; } catch (e) {}
+
+    // Counts
+    const users = await query('SELECT COUNT(*) as c FROM users').catch(() => ({ rows: [{ c: 0 }] }));
+    const premiumUsers = await query("SELECT COUNT(*) as c FROM users WHERE premium_tier != 'Free'").catch(() => ({ rows: [{ c: 0 }] }));
+    const botUsers = await query('SELECT COUNT(*) as c FROM telegram_bot_users').catch(() => ({ rows: [{ c: 0 }] }));
+    const pendingPayments = await query("SELECT COUNT(*) as c FROM payment_requests WHERE status = 'pending'").catch(() => ({ rows: [{ c: 0 }] }));
+    const approvedPayments = await query("SELECT COUNT(*) as c FROM payment_requests WHERE status = 'approved'").catch(() => ({ rows: [{ c: 0 }] }));
+    const premiumGrants = await query('SELECT COUNT(*) as c FROM premium_grants').catch(() => ({ rows: [{ c: 0 }] }));
+    const activeSessions = await query('SELECT COUNT(*) as c FROM device_sessions').catch(() => ({ rows: [{ c: 0 }] }));
+
+    // Latest user registration
+    const latestUser = await query('SELECT username, created_at FROM users ORDER BY created_at DESC LIMIT 1').catch(() => ({ rows: [] }));
+
+    res.json({
+      success: true,
+      timestamp: new Date().toISOString(),
+      responseTimeMs: Date.now() - startTime,
+      database: {
+        connected: dbOk,
+        poolHealthy: dbOk,
+      },
+      counts: {
+        users: parseInt(users.rows[0].c) || 0,
+        premiumUsers: parseInt(premiumUsers.rows[0].c) || 0,
+        botUsers: parseInt(botUsers.rows[0].c) || 0,
+        pendingPayments: parseInt(pendingPayments.rows[0].c) || 0,
+        approvedPayments: parseInt(approvedPayments.rows[0].c) || 0,
+        premiumGrants: parseInt(premiumGrants.rows[0].c) || 0,
+        activeSessions: parseInt(activeSessions.rows[0].c) || 0,
+      },
+      latestUser: latestUser.rows[0] || null,
+    });
+  } catch (err) {
+    console.error('admin status error:', err.message);
+    res.json({ success: false, error: err.message });
+  }
+});
+
+// ============================================================
+// POST /api/auth/telegram/admin/delete-data
+// Delete various types of data from the database
+// ============================================================
+router.post('/admin/delete-data', async (req, res) => {
+  try {
+    const { target, userId, paymentId, id } = req.body;
+    const entityId = userId || paymentId || id;
+    if (!target) return res.json({ success: false, error: 'Missing target' });
+
+    let deleted = 0;
+    let label = '';
+    let details = {};
+    let notifChatId = null;
+
+    switch (target) {
+      case 'user':
+        if (!entityId) return res.json({ success: false, error: 'Missing user ID' });
+        const user = await query('SELECT username, display_name FROM users WHERE id = $1 LIMIT 1', [entityId]).catch(() => ({ rows: [] }));
+        label = user.rows[0]?.display_name || user.rows[0]?.username || entityId;
+        const r1 = await query('DELETE FROM user_progress WHERE user_id = $1', [entityId]);
+        const r2 = await query('DELETE FROM refresh_tokens WHERE user_id = $1', [entityId]);
+        const r3 = await query('DELETE FROM user_stats WHERE user_id = $1', [entityId]);
+        const r4 = await query('DELETE FROM premium_grants WHERE user_id = $1', [entityId]);
+        const r5 = await query('DELETE FROM payment_requests WHERE user_id = $1', [entityId]);
+        await query('DELETE FROM notification_reads WHERE user_id = $1', [entityId]);
+        await query('DELETE FROM speaking_requests WHERE from_user_id = $1 OR to_user_id = $1', [entityId]);
+        await query('DELETE FROM password_reset_tokens WHERE user_id = $1', [entityId]);
+        await query('DELETE FROM user_profiles WHERE user_id = $1', [entityId]);
+        await query('DELETE FROM token_blacklist WHERE user_id = $1', [entityId]);
+        const r6 = await query('DELETE FROM telegram_bot_users WHERE user_id = $1', [entityId]);
+        const r7 = await query('DELETE FROM device_sessions WHERE user_id = $1', [entityId]);
+        const delUser = await query('DELETE FROM users WHERE id = $1 RETURNING id', [entityId]);
+        deleted = delUser.rows.length;
+        details = {
+          premiumGrantsDeleted: (r4?.rowCount || 0),
+          paymentRequestsDeleted: (r5?.rowCount || 0),
+          sessionsDeleted: (r7?.rowCount || 0),
+          botDataDeleted: (r6?.rowCount || 0),
+        };
+        break;
+
+      case 'payment_request':
+      case 'payment':
+        if (!entityId) return res.json({ success: false, error: 'Missing payment ID' });
+        label = entityId;
+        const delPay = await query('DELETE FROM payment_requests WHERE id = $1 RETURNING id', [entityId]);
+        deleted = delPay.rows.length;
+        break;
+
+      case 'premium_from_user':
+      case 'premium':
+        if (!entityId) return res.json({ success: false, error: 'Missing user ID' });
+        const pUser = await query('SELECT username, display_name, telegram_chat_id FROM users WHERE id = $1 LIMIT 1', [entityId]).catch(() => ({ rows: [] }));
+        label = pUser.rows[0]?.display_name || pUser.rows[0]?.username || entityId;
+        await query(`UPDATE users SET premium_tier = 'Free', premium_granted_at = NULL, premium_granted_by = NULL, premium_expires_at = NULL WHERE id = $1`, [entityId]);
+        const dp = await query('DELETE FROM premium_grants WHERE user_id = $1', [entityId]);
+        notifChatId = pUser.rows[0]?.telegram_chat_id;
+        if (notifChatId) {
+          try {
+            const token = getBotToken();
+            if (token) {
+              const https = require('https');
+              const msgData = JSON.stringify({
+                chat_id: notifChatId,
+                text: '⚠️ *Notice:* Your premium access has been removed by an administrator.',
+                parse_mode: 'Markdown',
+              });
+              const opts = {
+                hostname: 'api.telegram.org',
+                path: `/bot${token}/sendMessage`,
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(msgData) },
+              };
+              const req = https.request(opts);
+              req.write(msgData);
+              req.end();
+            }
+          } catch (_) {}
+        }
+        deleted = 1;
+        break;
+
+      case 'all_pending_payments':
+        label = 'all pending payment requests';
+        const delPending = await query("DELETE FROM payment_requests WHERE status = 'pending' RETURNING id");
+        deleted = delPending.rows.length;
+        break;
+
+      case 'all_sessions':
+        label = 'all device sessions';
+        const delSessions = await query('DELETE FROM device_sessions RETURNING id');
+        deleted = delSessions.rows.length;
+        break;
+
+      default:
+        return res.json({ success: false, error: 'Unknown target: ' + target });
+    }
+
+    res.json({ success: true, deleted, label, details, userNotified: !!notifChatId });
+  } catch (err) {
+    console.error('admin delete-data error:', err.message);
     res.json({ success: false, error: err.message });
   }
 });
