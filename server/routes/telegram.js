@@ -1378,7 +1378,9 @@ router.post('/admin/delete-data', async (req, res) => {
         const r4 = await query('DELETE FROM premium_grants WHERE user_id = $1', [uuid]);
         const r5 = await query('DELETE FROM payment_requests WHERE user_id = $1', [uuid]);
         await query('DELETE FROM notification_reads WHERE user_id = $1', [uuid]);
+        await query('DELETE FROM notifications WHERE user_id = $1', [uuid]);
         await query('DELETE FROM speaking_requests WHERE from_user_id = $1 OR to_user_id = $1', [uuid]);
+        await query('DELETE FROM speaking_sessions WHERE user_id = $1', [uuid]);
         await query('DELETE FROM password_reset_tokens WHERE user_id = $1', [uuid]);
         await query('DELETE FROM user_profiles WHERE user_id = $1', [uuid]);
         await query('DELETE FROM token_blacklist WHERE user_id = $1', [uuid]);
@@ -1463,7 +1465,9 @@ router.post('/admin/delete-data', async (req, res) => {
         await query('DELETE FROM premium_grants');
         await query('DELETE FROM payment_requests');
         await query('DELETE FROM notification_reads');
+        await query('DELETE FROM notifications');
         await query('DELETE FROM speaking_requests');
+        await query('DELETE FROM speaking_sessions');
         await query('DELETE FROM password_reset_tokens');
         await query('DELETE FROM user_profiles');
         await query('DELETE FROM token_blacklist');
