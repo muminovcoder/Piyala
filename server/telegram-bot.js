@@ -409,6 +409,7 @@ async function handleAdminCallback(query) {
           [{ text: '👑 Remove Premium from User', callback_data: 'admin_remove_premium' }],
           [{ text: '🗑 All Pending Payments', callback_data: 'admin_delete_all_pending' }],
           [{ text: '📱 All Device Sessions', callback_data: 'admin_delete_sessions' }],
+          [{ text: '🔥 DELETE ALL DATA', callback_data: 'admin_delete_all_data' }],
           [{ text: '🔙 Back to Admin', callback_data: 'admin_back' }],
         ],
       },
@@ -507,6 +508,19 @@ async function handleAdminCallback(query) {
       },
     });
     await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: 'Confirm?' });
+  }
+
+  // DELETE ALL DATA — complete wipe
+  else if (data === 'admin_delete_all_data') {
+    pendingAdminActions.set(chatId, { action: 'awaiting_delete_all_data' });
+    await tgApi('editMessageText', {
+      chat_id: chatId,
+      message_id: messageId,
+      text: '🔥 *⚠️ DESTRUCTIVE ACTION ⚠️*\n\nYou are about to delete **ALL DATA** from the database.\n\nThis includes:\n• All users and their progress\n• All premium records\n• All payment requests\n• All device sessions\n• Everything.\n\n**THIS CANNOT BE UNDONE!**\n\nType this exact phrase to confirm:\n`DELETE EVERYTHING`',
+      parse_mode: 'Markdown',
+      reply_markup: { inline_keyboard: [[{ text: '🔙 Cancel', callback_data: 'admin_back' }]] },
+    });
+    await tgApi('answerCallbackQuery', { callback_query_id: query.id, text: '⚠️ This deletes EVERYTHING!' });
   }
 
   else if (data === 'admin_confirm_delete_user') {
@@ -845,6 +859,29 @@ async function handleAdminMessage(msg) {
     } else {
       await sendMessage(chatId,
         `❌ *Failed*: ${result?.error || 'Error removing premium'}`,
+        { parse_mode: 'Markdown' }
+      );
+    }
+    return;
+  }
+
+  // Handle Delete All Data confirmation
+  if (pendingAction && pendingAction.action === 'awaiting_delete_all_data') {
+    if (text.trim() !== 'DELETE EVERYTHING') {
+      await sendMessage(chatId, '❌ Incorrect confirmation text. Type exactly: `DELETE EVERYTHING`\n\nOr send /cancel to abort.', { parse_mode: 'Markdown' });
+      return;
+    }
+    pendingAdminActions.delete(chatId);
+    await sendMessage(chatId, '🔥 *Deleting ALL data...*', { parse_mode: 'Markdown' });
+    const result = await backendCall('/api/auth/telegram/admin/delete-data', { target: 'all_data' });
+    if (result && result.success) {
+      await sendMessage(chatId,
+        '🔥 *All data has been deleted.*\n\nDatabase is now empty.\n\n⚠️ Restart the server to reinitialize schema if needed.',
+        { parse_mode: 'Markdown' }
+      );
+    } else {
+      await sendMessage(chatId,
+        '❌ *Failed*: ' + (result?.error || 'Error'),
         { parse_mode: 'Markdown' }
       );
     }

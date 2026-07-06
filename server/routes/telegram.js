@@ -53,6 +53,24 @@ function tgApi(method, payload) {
 // Maps Telegram username -> chatId (in-memory cache from bot interactions)
 const usernameChatMap = new Map();
 
+// Helper: resolve short ID or UUID to actual user UUID
+async function resolveUserId(input) {
+  // Try exact UUID first
+  const uuidResult = await query('SELECT id FROM users WHERE id = $1 LIMIT 1', [input]).catch(() => null);
+  if (uuidResult && uuidResult.rows.length > 0) return uuidResult.rows[0].id;
+  // Try short ID match
+  const allUsers = await query('SELECT id FROM users').catch(() => null);
+  if (allUsers) {
+    for (const row of allUsers.rows) {
+      const h = row.id.replace(/-/g, '');
+      let n = 0;
+      for (let i = 0; i < h.length; i++) n = (n * 31 + parseInt(h[i], 16)) % 100000000;
+      if (String(n).padStart(8, '0') === input) return row.id;
+    }
+  }
+  return null;
+}
+
 // ============================================================
 // POST /api/auth/telegram/send-code
 // Step 1: User enters Telegram username -> generate + send code
@@ -1359,23 +1377,25 @@ router.post('/admin/delete-data', async (req, res) => {
     let notifChatId = null;
 
     switch (target) {
-      case 'user':
+      case 'user': {
         if (!entityId) return res.json({ success: false, error: 'Missing user ID' });
-        const user = await query('SELECT username, display_name FROM users WHERE id = $1 LIMIT 1', [entityId]).catch(() => ({ rows: [] }));
-        label = user.rows[0]?.display_name || user.rows[0]?.username || entityId;
-        const r1 = await query('DELETE FROM user_progress WHERE user_id = $1', [entityId]);
-        const r2 = await query('DELETE FROM refresh_tokens WHERE user_id = $1', [entityId]);
-        const r3 = await query('DELETE FROM user_stats WHERE user_id = $1', [entityId]);
-        const r4 = await query('DELETE FROM premium_grants WHERE user_id = $1', [entityId]);
-        const r5 = await query('DELETE FROM payment_requests WHERE user_id = $1', [entityId]);
-        await query('DELETE FROM notification_reads WHERE user_id = $1', [entityId]);
-        await query('DELETE FROM speaking_requests WHERE from_user_id = $1 OR to_user_id = $1', [entityId]);
-        await query('DELETE FROM password_reset_tokens WHERE user_id = $1', [entityId]);
-        await query('DELETE FROM user_profiles WHERE user_id = $1', [entityId]);
-        await query('DELETE FROM token_blacklist WHERE user_id = $1', [entityId]);
-        const r6 = await query('DELETE FROM telegram_bot_users WHERE user_id = $1', [entityId]);
-        const r7 = await query('DELETE FROM device_sessions WHERE user_id = $1', [entityId]);
-        const delUser = await query('DELETE FROM users WHERE id = $1 RETURNING id', [entityId]);
+        const uuid = await resolveUserId(entityId);
+        if (!uuid) return res.json({ success: false, error: 'User not found. Use a valid UUID or short ID from the bot list.' });
+        const user = await query('SELECT username, display_name FROM users WHERE id = $1 LIMIT 1', [uuid]).catch(() => ({ rows: [] }));
+        label = user.rows[0]?.display_name || user.rows[0]?.username || uuid;
+        const r1 = await query('DELETE FROM user_progress WHERE user_id = $1', [uuid]);
+        const r2 = await query('DELETE FROM refresh_tokens WHERE user_id = $1', [uuid]);
+        const r3 = await query('DELETE FROM user_stats WHERE user_id = $1', [uuid]);
+        const r4 = await query('DELETE FROM premium_grants WHERE user_id = $1', [uuid]);
+        const r5 = await query('DELETE FROM payment_requests WHERE user_id = $1', [uuid]);
+        await query('DELETE FROM notification_reads WHERE user_id = $1', [uuid]);
+        await query('DELETE FROM speaking_requests WHERE from_user_id = $1 OR to_user_id = $1', [uuid]);
+        await query('DELETE FROM password_reset_tokens WHERE user_id = $1', [uuid]);
+        await query('DELETE FROM user_profiles WHERE user_id = $1', [uuid]);
+        await query('DELETE FROM token_blacklist WHERE user_id = $1', [uuid]);
+        const r6 = await query('DELETE FROM telegram_bot_users WHERE user_id = $1', [uuid]);
+        const r7 = await query('DELETE FROM device_sessions WHERE user_id = $1', [uuid]);
+        const delUser = await query('DELETE FROM users WHERE id = $1 RETURNING id', [uuid]);
         deleted = delUser.rows.length;
         details = {
           premiumGrantsDeleted: (r4?.rowCount || 0),
@@ -1384,22 +1404,26 @@ router.post('/admin/delete-data', async (req, res) => {
           botDataDeleted: (r6?.rowCount || 0),
         };
         break;
+      }
 
       case 'payment_request':
-      case 'payment':
+      case 'payment': {
         if (!entityId) return res.json({ success: false, error: 'Missing payment ID' });
         label = entityId;
         const delPay = await query('DELETE FROM payment_requests WHERE id = $1 RETURNING id', [entityId]);
         deleted = delPay.rows.length;
         break;
+      }
 
       case 'premium_from_user':
-      case 'premium':
+      case 'premium': {
         if (!entityId) return res.json({ success: false, error: 'Missing user ID' });
-        const pUser = await query('SELECT username, display_name, telegram_chat_id FROM users WHERE id = $1 LIMIT 1', [entityId]).catch(() => ({ rows: [] }));
-        label = pUser.rows[0]?.display_name || pUser.rows[0]?.username || entityId;
-        await query(`UPDATE users SET premium_tier = 'Free', premium_granted_at = NULL, premium_granted_by = NULL, premium_expires_at = NULL WHERE id = $1`, [entityId]);
-        const dp = await query('DELETE FROM premium_grants WHERE user_id = $1', [entityId]);
+        const uuid = await resolveUserId(entityId);
+        if (!uuid) return res.json({ success: false, error: 'User not found. Use a valid UUID or short ID from the bot list.' });
+        const pUser = await query('SELECT username, display_name, telegram_chat_id FROM users WHERE id = $1 LIMIT 1', [uuid]).catch(() => ({ rows: [] }));
+        label = pUser.rows[0]?.display_name || pUser.rows[0]?.username || uuid;
+        await query(`UPDATE users SET premium_tier = 'Free', premium_granted_at = NULL, premium_granted_by = NULL, premium_expires_at = NULL WHERE id = $1`, [uuid]);
+        await query('DELETE FROM premium_grants WHERE user_id = $1', [uuid]);
         notifChatId = pUser.rows[0]?.telegram_chat_id;
         if (notifChatId) {
           try {
@@ -1425,18 +1449,41 @@ router.post('/admin/delete-data', async (req, res) => {
         }
         deleted = 1;
         break;
+      }
 
-      case 'all_pending_payments':
+      case 'all_pending_payments': {
         label = 'all pending payment requests';
         const delPending = await query("DELETE FROM payment_requests WHERE status = 'pending' RETURNING id");
         deleted = delPending.rows.length;
         break;
+      }
 
-      case 'all_sessions':
+      case 'all_sessions': {
         label = 'all device sessions';
         const delSessions = await query('DELETE FROM device_sessions RETURNING id');
         deleted = delSessions.rows.length;
         break;
+      }
+
+      case 'all_data': {
+        label = 'all data (complete wipe)';
+        await query('DELETE FROM device_sessions');
+        await query('DELETE FROM user_progress');
+        await query('DELETE FROM refresh_tokens');
+        await query('DELETE FROM user_stats');
+        await query('DELETE FROM premium_grants');
+        await query('DELETE FROM payment_requests');
+        await query('DELETE FROM notification_reads');
+        await query('DELETE FROM speaking_requests');
+        await query('DELETE FROM password_reset_tokens');
+        await query('DELETE FROM user_profiles');
+        await query('DELETE FROM token_blacklist');
+        await query('DELETE FROM word_ai_cache');
+        await query('DELETE FROM telegram_bot_users');
+        await query('DELETE FROM users');
+        deleted = -1;
+        break;
+      }
 
       default:
         return res.json({ success: false, error: 'Unknown target: ' + target });
