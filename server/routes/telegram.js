@@ -53,12 +53,19 @@ function tgApi(method, payload) {
 // Maps Telegram username -> chatId (in-memory cache from bot interactions)
 const usernameChatMap = new Map();
 
-// Helper: resolve short ID or UUID to actual user UUID
+// Helper: resolve short ID, Telegram ID, or UUID to actual user UUID
 async function resolveUserId(input) {
+  if (!input) return null;
   // Try exact UUID first
   const uuidResult = await query('SELECT id FROM users WHERE id = $1 LIMIT 1', [input]).catch(() => null);
   if (uuidResult && uuidResult.rows.length > 0) return uuidResult.rows[0].id;
-  // Try short ID match
+  // Try Telegram ID (users who logged in via Telegram)
+  const tgResult = await query("SELECT id FROM users WHERE telegram_id = $1 LIMIT 1", [input]).catch(() => null);
+  if (tgResult && tgResult.rows.length > 0) return tgResult.rows[0].id;
+  // Try telegram_bot_users (registered bot users)
+  const botResult = await query('SELECT user_id FROM telegram_bot_users WHERE telegram_id = $1 LIMIT 1', [input]).catch(() => null);
+  if (botResult && botResult.rows.length > 0 && botResult.rows[0].user_id) return botResult.rows[0].user_id;
+  // Try short ID match (8-digit website user ID)
   const allUsers = await query('SELECT id FROM users').catch(() => null);
   if (allUsers) {
     for (const row of allUsers.rows) {
@@ -649,35 +656,17 @@ router.post('/admin/give-premium', async (req, res) => {
       return res.json({ success: false, error: 'Invalid tier' });
     }
 
-    // Find the user by short ID or UUID
-    let targetUser = null;
-    
-    // Try exact UUID first
-    const uuidResult = await query(
-      'SELECT id, username, display_name, telegram_chat_id, telegram_id FROM users WHERE id = $1 LIMIT 1',
-      [userId]
-    ).catch(() => null);
-
-    if (uuidResult && uuidResult.rows.length > 0) {
-      targetUser = uuidResult.rows[0];
-    } else {
-      // Try matching by short ID (last 8 chars of UUID converted to numeric ID)
-      const allUsers = await query('SELECT id, username, display_name, telegram_chat_id, telegram_id FROM users').catch(() => null);
-      if (allUsers) {
-        for (const row of allUsers.rows) {
-          const h = row.id.replace(/-/g, '');
-          let n = 0;
-          for (let i = 0; i < h.length; i++) {
-            n = (n * 31 + parseInt(h[i], 16)) % 100000000;
-          }
-          const shortId = String(n).padStart(8, '0');
-          if (shortId === userId) {
-            targetUser = row;
-            break;
-          }
-        }
-      }
+    // Find the user by UUID, short ID, or Telegram ID
+    const resolvedUuid = await resolveUserId(userId);
+    if (!resolvedUuid) {
+      return res.json({ success: false, error: 'User not found' });
     }
+
+    const targetUserRows = await query(
+      'SELECT id, username, display_name, telegram_chat_id, telegram_id FROM users WHERE id = $1 LIMIT 1',
+      [resolvedUuid]
+    ).catch(() => null);
+    const targetUser = targetUserRows && targetUserRows.rows.length > 0 ? targetUserRows.rows[0] : null;
 
     if (!targetUser) {
       return res.json({ success: false, error: 'User not found' });

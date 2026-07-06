@@ -175,7 +175,7 @@ async function handleAdminCallback(query) {
     await tgApi('editMessageText', {
       chat_id: chatId,
       message_id: messageId,
-      text: `🎁 *Give Premium to User*\n\nSend me the *User ID* (short ID like \`12345678\` or full UUID) of the user you want to give premium to.\n\nTo cancel, send /cancel`,
+      text: `🎁 *Give Premium to User*\n\nEnter the website User ID (short ID like \`12345678\` from /listpremium), Telegram ID, or full UUID.\n\nTo cancel, send /cancel`,
       parse_mode: 'Markdown',
       reply_markup: { inline_keyboard: [[{ text: '🔙 Cancel', callback_data: 'admin_back' }]] },
     });
@@ -423,7 +423,7 @@ async function handleAdminCallback(query) {
     await tgApi('editMessageText', {
       chat_id: chatId,
       message_id: messageId,
-      text: '🗑 *Delete User*\n\nSend me the *User ID* (UUID or short ID) of the user to delete.\n\n⚠️ This will permanently delete the user and all their data!\n\nTo cancel, send /cancel',
+      text: '👤 *Delete User*\n\nEnter the website User ID (short ID like `12345678` from /listpremium), Telegram ID, or full UUID.\n\n⚠️ This permanently deletes the user and all their data!\n\nTo cancel, send /cancel',
       parse_mode: 'Markdown',
       reply_markup: { inline_keyboard: [[{ text: '🔙 Cancel', callback_data: 'admin_back' }]] },
     });
@@ -447,7 +447,7 @@ async function handleAdminCallback(query) {
     await tgApi('editMessageText', {
       chat_id: chatId,
       message_id: messageId,
-      text: '👑 *Remove Premium from User*\n\nSend me the *User ID* (UUID or short ID) to remove premium from.\n\nTo cancel, send /cancel',
+      text: '👑 *Remove Premium from User*\n\nEnter the website User ID (short ID like `12345678`), Telegram ID, or full UUID.\n\nTo cancel, send /cancel',
       parse_mode: 'Markdown',
       reply_markup: { inline_keyboard: [[{ text: '🔙 Cancel', callback_data: 'admin_back' }]] },
     });
