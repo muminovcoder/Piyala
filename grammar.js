@@ -659,9 +659,9 @@ function renderGrammarTabs() {
   ).join('')}</div><div id="grammar-tab-content" class="g-page-in"></div>`;
   }
 
-function switchGrammarTab(id) {
-  if (id === 'ai' && typeof requirePremium === 'function' && !requirePremium('AI Tutor')) return;
-  if (id === 'analytics' && typeof requirePremium === 'function' && !requirePremium('Grammar Analytics')) return;
+async function switchGrammarTab(id) {
+  if (id === 'ai' && typeof requirePremium === 'function' && !(await requirePremium('AI Tutor'))) return;
+  if (id === 'analytics' && typeof requirePremium === 'function' && !(await requirePremium('Grammar Analytics'))) return;
   grammarTab=id;
   renderGrammar();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1275,8 +1275,8 @@ function showGrammarQuizResult() {
 // =============================================
 // GRAMMAR — DAILY CHALLENGE
 // =============================================
-function startGrammarDailyChallenge() {
-  if (typeof requirePremium === 'function' && !requirePremium('Daily challenges & bonus XP')) return;
+async function startGrammarDailyChallenge() {
+  if (typeof requirePremium === 'function' && !(await requirePremium('Daily challenges & bonus XP'))) return;
   const today = new Date().toDateString();
   const t = GRAMMAR_TENSES[Math.floor(Math.random()*GRAMMAR_TENSES.length)];
   const questions = [...t.positive,...t.negative,...t.question].slice(0,5);
@@ -1722,7 +1722,7 @@ function grammarAISaveChat() {
 function grammarAINow() { return new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }); }
 
 async function grammarAIAnalyze(text) {
-  if (typeof requirePremium === 'function' && !requirePremium('AI Tutor')) return;
+  if (typeof requirePremium === 'function' && !(await requirePremium('AI Tutor'))) return;
   if (grammarAILoading) return;
   const chatEl = document.getElementById('grammar-ai-chat');
   if (!chatEl) return;

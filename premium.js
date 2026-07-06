@@ -578,7 +578,11 @@ function updateFaqToggleBtn() {
   btn.textContent = open === items.length ? 'Collapse All' : 'Expand All';
 }
 
-function requirePremium(feature) {
+async function requirePremium(feature) {
+  // Always sync from server first so admin-granted premium works immediately
+  if (typeof syncPremiumFromServer === 'function') {
+    try { await syncPremiumFromServer(); } catch (e) {}
+  }
   const plan = getCurrentPlan();
   if (plan !== 'Free') return true;
   const msg = feature
@@ -588,8 +592,8 @@ function requirePremium(feature) {
   return false;
 }
 
-function premiumGuard(feature, route) {
-  if (requirePremium(feature)) {
+async function premiumGuard(feature, route) {
+  if (await requirePremium(feature)) {
     if (typeof routerNavigate === 'function') routerNavigate(route);
     else if (typeof showPage === 'function') showPage(route);
   }

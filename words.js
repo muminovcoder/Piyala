@@ -1160,7 +1160,7 @@ function showWordModal(data) {
 
 // ===== AI WORD EXPLANATION =====
 async function getAIExplanation(word) {
-  if (typeof requirePremium === 'function' && !requirePremium('AI Word Explanations')) return;
+  if (typeof requirePremium === 'function' && !(await requirePremium('AI Word Explanations'))) return;
   const area = document.getElementById('ai-explanation-area');
   if (!area) return;
   area.style.display = 'block';
@@ -1967,7 +1967,7 @@ function closeRootExplorer() {
 
 // ---- AI Mnemonic Generator ----
 async function generateMnemonic(word) {
-  if (typeof requirePremium === 'function' && !requirePremium('AI Mnemonics')) return;
+  if (typeof requirePremium === 'function' && !(await requirePremium('AI Mnemonics'))) return;
   if (!word) { toast('Load a word first', 'info'); return; }
   const q = document.getElementById('explore-search-input');
   const wordCardArea = document.getElementById('word-card-area');
@@ -2004,7 +2004,7 @@ async function generateMnemonic(word) {
 let _quizState = { questions: [], index: 0, score: 0, answered: false };
 
 async function generateAIQuiz(word) {
-  if (typeof requirePremium === 'function' && !requirePremium('AI Quizzes')) return;
+  if (typeof requirePremium === 'function' && !(await requirePremium('AI Quizzes'))) return;
   const section = document.getElementById('ai-quiz-section');
   const content = document.getElementById('quiz-content');
   if (!section || !content) return;
@@ -2089,7 +2089,7 @@ function closeAIQuiz() {
 
 // ---- Learning Path ----
 async function showLearningPath() {
-  if (typeof requirePremium === 'function' && !requirePremium('AI Learning Path')) return;
+  if (typeof requirePremium === 'function' && !(await requirePremium('AI Learning Path'))) return;
   const section = document.getElementById('learning-path-section');
   const content = document.getElementById('learning-path-content');
   const badge = document.getElementById('path-level-badge');

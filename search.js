@@ -3,8 +3,8 @@
 // =============================================
 let searchDebounce = null;
 
-function initSearchPage() {
-  if (typeof requirePremium === 'function' && !requirePremium('Advanced Search')) return;
+async function initSearchPage() {
+  if (typeof requirePremium === 'function' && !(await requirePremium('Advanced Search'))) return;
   const input = document.getElementById('page-search-input');
   if (!input) return;
   input.removeEventListener('keydown', initSearchPage._keydown);
@@ -68,7 +68,7 @@ function setSearchFilter(el) {
 }
 
 async function runPageSearch() {
-  if (typeof requirePremium === 'function' && !requirePremium('Advanced Search')) return;
+  if (typeof requirePremium === 'function' && !(await requirePremium('Advanced Search'))) return;
   const query = document.getElementById('page-search-input').value.trim();
   if (!query) return;
   addSearchHistory(query);
