@@ -7071,7 +7071,7 @@ function clearAllData() {
   location.reload();
 }
 
-function showPage(id, sub) {
+async function showPage(id, sub) {
   closeSidebar();
   if (id === state.currentPage && !sub) return;
   state.prevPage = state.currentPage;
@@ -7099,10 +7099,13 @@ function showPage(id, sub) {
   }
   state.currentPage = id;
   injectBackButton();
+  // Block page rendering until premium is confirmed from server
+  // This ensures getCurrentPlan() reads the correct value during render
   if (typeof syncPremiumFromServer === 'function' && state.authUser && id !== 'premium') {
-    syncPremiumFromServer().then(function(data) {
+    try {
+      const data = await syncPremiumFromServer();
       if (data && data.tier) updateSidebarPlan();
-    });
+    } catch (e) {}
   }
   if (id === 'dashboard') { refreshDashboard(); }
   else if (id === 'explore') { initExplorePage(); }
@@ -9401,12 +9404,10 @@ async function init() {
     updateAuthUI();
     // Sync premium plan from server for admin-granted premium
     if (typeof syncPremiumFromServer === 'function') {
-      Promise.resolve().then(function() { return syncPremiumFromServer(); }).then(function(hasPremium) {
-        if (hasPremium) {
-          updateSidebarPlan();
-          updateAuthUI();
-        }
-      });
+      try {
+        const hasPremium = await syncPremiumFromServer();
+        if (hasPremium) { updateSidebarPlan(); updateAuthUI(); }
+      } catch (e) {}
     }
     // Heartbeat: update last_login_at so user stays "online" (every 3 minutes)
     (function heartbeat() {

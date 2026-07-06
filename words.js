@@ -666,6 +666,8 @@ async function generateNewWord() {
 }
 
 async function loadWordDisplay(word, giveXP = true) {
+  // Sync premium before checking limits so admin-granted premium takes effect immediately
+  if (typeof syncPremiumFromServer === 'function') { try { await syncPremiumFromServer(); } catch (e) {} }
   const isFree = typeof getCurrentPlan === 'function' && getCurrentPlan() === 'Free';
   if (isFree && state.stats.wordsToday >= 120) {
     clearLoading('word-card-area');
@@ -1503,6 +1505,7 @@ function shuffle(arr) {
 }
 
 async function loadFlashcardWords() {
+  if (typeof syncPremiumFromServer === 'function') { try { await syncPremiumFromServer(); } catch (e) {} }
   const isFree = typeof getCurrentPlan === 'function' && getCurrentPlan() === 'Free';
   const sm2 = isFree ? getSM2Data() : {};
   const cardCount = Object.keys(sm2).length;
@@ -1522,7 +1525,7 @@ async function loadFlashcardWords() {
   let newCards = (await Promise.all(newWords.map(w => API.getFullWordData(w)))).filter(Boolean);
   if (isFree && cardCount >= 30) {
     newCards = [];
-    if (!dueCards.length) { requirePremium('Unlimited flashcards'); return; }
+    if (!dueCards.length) { await requirePremium('Unlimited flashcards'); return; }
   }
   state.flashcards = API.shuffle([...dueCards, ...newCards]);
   state.fcIndex = 0;

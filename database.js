@@ -776,6 +776,7 @@ function validateAIFields(result, cleanWord) {
 
 // ===== HYBRID: API (factual) + AI (enrichment) combined =====
 async function getHybridWordData(word) {
+  if (typeof syncPremiumFromServer === 'function') { try { await syncPremiumFromServer(); } catch (e) {} }
   if (typeof getCurrentPlan === 'function' && getCurrentPlan() === 'Free') return null;
   var cleanWord = String(word).trim().toLowerCase();
   var cacheKey = 'vm_hybrid_' + cleanWord;
